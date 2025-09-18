@@ -1,0 +1,34 @@
+# Development Dockerfile with hot-reloading for ARM architecture
+FROM --platform=linux/arm64 node:18-alpine
+
+# Install system dependencies
+RUN apk add --no-cache libc6-compat python3 make g++ git
+
+WORKDIR /app
+
+# Install nodemon globally for backend hot-reloading
+RUN npm install -g nodemon concurrently
+
+# Copy package files
+COPY package*.json ./
+COPY frontend/package*.json ./frontend/
+COPY backend/package*.json ./backend/
+
+# Install all dependencies (including dev dependencies)
+RUN cd frontend && npm install
+RUN cd backend && npm install
+
+# Copy source code
+COPY frontend/ ./frontend/
+COPY backend/ ./backend/
+
+# Create uploads directory
+RUN mkdir -p uploads
+
+# Expose ports
+EXPOSE 3000 5173
+
+ENV NODE_ENV=development
+
+# Start both frontend and backend with hot-reloading
+CMD ["sh", "-c", "cd backend && npm run dev & cd frontend && npm run dev -- --host 0.0.0.0 --port 5173 & wait"]

@@ -1,0 +1,36 @@
+{
+  "name": "mermaid-yang-backend",
+  "version": "1.0.0",
+  "description": "Backend server for Mermaid & YANG visualization tool",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "cors": "^2.8.5",
+    "multer": "^2.0.2",
+    "helmet": "^8.0.0",
+    "compression": "^1.7.5",
+    "express-rate-limit": "^7.4.1",
+    "yang-js": "^0.24.70",
+    "markdownlint": "^0.36.1",
+    "mermaid": "^11.4.1",
+    "jsdom": "^25.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  },
+  "keywords": [
+    "mermaid",
+    "yang",
+    "visualization",
+    "markdown",
+    "diagrams"
+  ],
+  "author": "Mermaid YANG Visualizer",
+  "license": "MIT"
+}

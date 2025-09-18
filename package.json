@@ -1,0 +1,19 @@
+{
+  "name": "mermaid-desktop-tool",
+  "version": "1.0.0",
+  "description": "Mermaid diagram and YANG model visualization tool",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:frontend": "cd frontend && npm run dev -- --host 0.0.0.0 --port 5173",
+    "dev:backend": "cd backend && npm run dev",
+    "build": "cd frontend && npm run build",
+    "start": "cd backend && npm start",
+    "test": "cd frontend && npm test",
+    "test:e2e": "cd frontend && npm run test:e2e",
+    "lint": "cd frontend && npm run lint",
+    "typecheck": "cd frontend && npm run typecheck"
+  },
+  "keywords": ["mermaid", "diagram", "yang", "visualization"],
+  "author": "",
+  "license": "MIT"
+}
