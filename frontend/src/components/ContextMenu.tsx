@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react'
-import { FileText, Hash, CheckCircle, AlertCircle, Wand2 } from 'lucide-react'
 
 interface ContextMenuItem {
   id: string

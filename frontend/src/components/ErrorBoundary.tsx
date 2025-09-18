@@ -81,7 +81,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
               </h1>
 
               <p className="text-gray-600 dark:text-gray-400 text-sm">
-                We encountered an unexpected error. This has been logged and we're working on a fix.
+                We encountered an unexpected error. This has been logged and we&apos;re working on a fix.
               </p>
             </div>
 

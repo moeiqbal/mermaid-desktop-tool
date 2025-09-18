@@ -15,13 +15,18 @@ router.post('/parse', async (req, res) => {
     }
 
     // Try using node-yang first for more accurate parsing
-    let parseResult
-    try {
-      parseResult = await parseWithNodeYang(content, filename)
-    } catch (nodeYangError) {
-      console.warn('node-yang parsing failed, falling back to basic parser:', nodeYangError.message)
-      // Fallback to basic parser if node-yang fails
-      parseResult = parseYangContent(content, filename)
+    let parseResult = await parseWithNodeYang(content, filename)
+
+    // If yang-js failed to parse, try the basic parser as fallback
+    if (!parseResult.valid && parseResult.errors.length > 0) {
+      console.warn('yang-js parsing failed, falling back to basic parser:', parseResult.errors[0].message)
+      const basicResult = parseYangContent(content, filename)
+
+      // If basic parser found modules but yang-js didn't, use basic result
+      // Otherwise, keep yang-js result for better error reporting
+      if (basicResult.modules.length > 0 && parseResult.modules.length === 0) {
+        parseResult = { ...basicResult, parser: 'basic-fallback' }
+      }
     }
 
     res.json({
@@ -91,7 +96,16 @@ async function parseWithNodeYang(content, filename) {
       const model = Yang.parse(content)
 
       if (!model) {
-        throw new Error('Failed to parse YANG model')
+        const result = {
+          valid: false,
+          tree: {},
+          modules: [],
+          errors: [{ line: 1, message: 'Failed to parse YANG model - no model returned', severity: 'error' }],
+          metadata: { filename, imports: [], includes: [], revisions: [] },
+          parser: 'yang-js'
+        }
+        resolve(result)
+        return
       }
 
       const result = {
@@ -151,7 +165,20 @@ async function parseWithNodeYang(content, filename) {
 
       resolve(result)
     } catch (error) {
-      reject(error)
+      // Create a structured error response instead of rejecting
+      const result = {
+        valid: false,
+        tree: {},
+        modules: [],
+        errors: [{
+          line: 1,
+          message: error.message || 'Unknown parsing error',
+          severity: 'error'
+        }],
+        metadata: { filename, imports: [], includes: [], revisions: [] },
+        parser: 'yang-js'
+      }
+      resolve(result)
     }
   })
 }

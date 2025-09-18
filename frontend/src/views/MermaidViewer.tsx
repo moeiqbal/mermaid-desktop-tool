@@ -2,14 +2,15 @@ import React, { useState, useEffect, useCallback, useMemo, memo } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import { Upload, FileText, Search, Trash2, AlertCircle, RefreshCw, FileCode, Hash, CheckCircle, Wand2, Grid } from 'lucide-react'
+import { Upload, FileText, Search, Trash2, AlertCircle, RefreshCw, FileCode, Hash, CheckCircle, Wand2, Grid, Globe } from 'lucide-react'
 import MermaidDiagram from '../components/MermaidDiagram'
 import MultiDiagramViewer from '../components/MultiDiagramViewer'
 import ContextMenu from '../components/ContextMenu'
 import LintingModal from '../components/LintingModal'
+import HtmlExportModal from '../components/HtmlExportModal'
 import { FileListSkeleton } from '../components/LoadingSkeleton'
 import { useToast } from '../components/NotificationSystem'
-import { extractMermaidFromMarkdown, extractMermaidDiagramsWithMetadata, initMermaid, DiagramMetadata } from '../utils/mermaid'
+import { extractMermaidDiagramsWithMetadata, initMermaid, DiagramMetadata } from '../utils/mermaid'
 
 // Performance optimization: debounce hook
 const useDebounce = (value: string, delay: number) => {
@@ -47,7 +48,8 @@ const FileListItem = memo<{
   onRightClick: (e: React.MouseEvent, file: FileItem) => void
   formatFileSize: (bytes: number) => string
   getFileIcon: (file: FileItem) => React.ReactNode
-}>(({ file, isSelected, onSelect, onDelete, onRightClick, formatFileSize, getFileIcon }) => (
+}>(function FileListItem({ file, isSelected, onSelect, onDelete, onRightClick, formatFileSize, getFileIcon }) {
+  return (
   <div
     className={`flex items-center p-3 rounded-lg cursor-pointer group transition-colors hover-lift ${
       isSelected
@@ -75,7 +77,8 @@ const FileListItem = memo<{
       <Trash2 className="w-4 h-4 text-red-500" />
     </button>
   </div>
-))
+  )
+})
 
 const MermaidViewer: React.FC = () => {
   const [files, setFiles] = useState<FileItem[]>([])
@@ -93,6 +96,10 @@ const MermaidViewer: React.FC = () => {
     file: FileItem | null
   }>({ isOpen: false, position: { x: 0, y: 0 }, file: null })
   const [lintingModal, setLintingModal] = useState<{
+    isOpen: boolean
+    file: FileItem | null
+  }>({ isOpen: false, file: null })
+  const [htmlExportModal, setHtmlExportModal] = useState<{
     isOpen: boolean
     file: FileItem | null
   }>({ isOpen: false, file: null })
@@ -225,7 +232,6 @@ const MermaidViewer: React.FC = () => {
     e.preventDefault()
     e.stopPropagation()
 
-    const rect = (e.target as HTMLElement).getBoundingClientRect()
     setContextMenu({
       isOpen: true,
       position: { x: e.clientX, y: e.clientY },
@@ -235,6 +241,11 @@ const MermaidViewer: React.FC = () => {
 
   const handleLintFile = (file: FileItem) => {
     setLintingModal({ isOpen: true, file })
+    setContextMenu({ isOpen: false, position: { x: 0, y: 0 }, file: null })
+  }
+
+  const handleHtmlExport = (file: FileItem) => {
+    setHtmlExportModal({ isOpen: true, file })
     setContextMenu({ isOpen: false, position: { x: 0, y: 0 }, file: null })
   }
 
@@ -286,6 +297,13 @@ const MermaidViewer: React.FC = () => {
         label: 'Auto-fix Issues',
         icon: Wand2,
         onClick: () => handleLintFile(file)
+      })
+
+      items.push({
+        id: 'html-export',
+        label: 'Export to HTML',
+        icon: Globe,
+        onClick: () => handleHtmlExport(file)
       })
     }
 
@@ -429,11 +447,23 @@ const MermaidViewer: React.FC = () => {
                 </span>
               )}
             </div>
-            {selectedFile && (
-              <div className="text-sm text-gray-500 dark:text-gray-400">
-                {selectedFile.type} • {formatFileSize(selectedFile.size)}
-              </div>
-            )}
+            <div className="flex items-center gap-3">
+              {selectedFile && selectedFile.type === 'markdown' && mermaidDiagrams.length > 0 && (
+                <button
+                  onClick={() => handleHtmlExport(selectedFile)}
+                  className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-md transition-colors flex items-center gap-2"
+                  title="Export to HTML with interactive diagrams"
+                >
+                  <Globe className="w-4 h-4" />
+                  Export HTML
+                </button>
+              )}
+              {selectedFile && (
+                <div className="text-sm text-gray-500 dark:text-gray-400">
+                  {selectedFile.type} • {formatFileSize(selectedFile.size)}
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -486,6 +516,17 @@ const MermaidViewer: React.FC = () => {
         onClose={() => setLintingModal({ isOpen: false, file: null })}
         onFileUpdate={handleFileUpdate}
       />
+
+      {/* HTML Export Modal */}
+      {htmlExportModal.file && (
+        <HtmlExportModal
+          isOpen={htmlExportModal.isOpen}
+          onClose={() => setHtmlExportModal({ isOpen: false, file: null })}
+          fileName={htmlExportModal.file.name}
+          content={fileContent}
+          diagrams={mermaidDiagrams}
+        />
+      )}
     </div>
   )
 }

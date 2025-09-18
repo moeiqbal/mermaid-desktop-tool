@@ -10,13 +10,12 @@ import {
   FileCode,
   Download,
   FolderTree,
-  Eye,
-  EyeOff,
   ChevronLeft,
   ChevronRight
 } from 'lucide-react'
 import YangTreeNode, { type YangNode } from '../components/YangTreeNode'
 import YangPropertiesPanel from '../components/YangPropertiesPanel'
+import YangErrorPanel from '../components/YangErrorPanel'
 
 interface YangFile {
   id: string
@@ -384,44 +383,42 @@ const YangExplorer: React.FC = () => {
             )}
           </div>
 
-          <div className="flex-1 overflow-y-auto p-4">
+          <div className="flex-1 overflow-y-auto p-4 space-y-4">
             {selectedFile && parseResult ? (
-              parseResult.modules.length > 0 ? (
-                <div className="yang-tree">
-                  {parseResult.modules.map((module, index) => (
-                    <YangTreeNode
-                      key={`${module.name}-${index}`}
-                      node={module}
-                      level={0}
-                      onSelect={setSelectedNode}
-                      selectedNode={selectedNode}
-                      searchQuery={treeSearchQuery}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-                    Parse Error
-                  </h3>
-                  <p className="text-gray-500 dark:text-gray-400">
-                    Unable to parse the YANG file. Check the syntax and try again.
-                  </p>
-                  {parseResult.errors.length > 0 && (
-                    <div className="mt-4 text-left bg-red-50 dark:bg-red-900/20 p-4 rounded-lg">
-                      <h4 className="font-medium text-red-900 dark:text-red-100 mb-2">Errors:</h4>
-                      <ul className="space-y-1">
-                        {parseResult.errors.map((error, index) => (
-                          <li key={index} className="text-sm text-red-700 dark:text-red-300">
-                            Line {error.line}: {error.message}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              )
+              <>
+                {/* Show error panel if there are errors */}
+                {parseResult.errors.length > 0 && (
+                  <YangErrorPanel
+                    errors={parseResult.errors}
+                    fileName={selectedFile.name}
+                  />
+                )}
+
+                {parseResult.modules.length > 0 ? (
+                  <div className="yang-tree">
+                    {parseResult.modules.map((module, index) => (
+                      <YangTreeNode
+                        key={`${module.name}-${index}`}
+                        node={module}
+                        level={0}
+                        onSelect={setSelectedNode}
+                        selectedNode={selectedNode}
+                        searchQuery={treeSearchQuery}
+                      />
+                    ))}
+                  </div>
+                ) : parseResult.errors.length === 0 ? (
+                  <div className="text-center py-8">
+                    <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                      No Content Found
+                    </h3>
+                    <p className="text-gray-500 dark:text-gray-400">
+                      The YANG file was parsed successfully but no modules were found.
+                    </p>
+                  </div>
+                ) : null}
+              </>
             ) : (
               <div className="h-full flex items-center justify-center">
                 <div className="text-center">

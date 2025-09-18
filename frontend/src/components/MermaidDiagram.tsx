@@ -15,6 +15,7 @@ const MermaidDiagram: React.FC<MermaidDiagramProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null)
   const svgRef = useRef<SVGSVGElement | null>(null)
+  const exportMenuRef = useRef<HTMLDivElement>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [scale, setScale] = useState(1)
@@ -22,6 +23,7 @@ const MermaidDiagram: React.FC<MermaidDiagramProps> = ({
   const [isDragging, setIsDragging] = useState(false)
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
   const [isFullscreen, setIsFullscreen] = useState(false)
+  const [showExportMenu, setShowExportMenu] = useState(false)
 
   const renderDiagram = useCallback(async () => {
     if (!definition.trim()) {
@@ -72,6 +74,20 @@ const MermaidDiagram: React.FC<MermaidDiagramProps> = ({
   useEffect(() => {
     renderDiagram()
   }, [renderDiagram])
+
+  // Handle click outside to close export menu
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (exportMenuRef.current && !exportMenuRef.current.contains(event.target as Node)) {
+        setShowExportMenu(false)
+      }
+    }
+
+    if (showExportMenu) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [showExportMenu])
 
   const handleZoomIn = useCallback(() => {
     setScale(prev => Math.min(prev * 1.2, 3))
@@ -220,26 +236,38 @@ const MermaidDiagram: React.FC<MermaidDiagramProps> = ({
           </button>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700" ref={exportMenuRef}>
           <div className="relative">
-            <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors flex items-center group">
+            <button
+              onClick={() => setShowExportMenu(!showExportMenu)}
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors flex items-center"
+              title="Export diagram"
+            >
               <Download className="w-4 h-4 mr-1" />
               Export
             </button>
-            <div className="absolute right-0 top-full mt-1 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none group-hover:pointer-events-auto">
-              <button
-                onClick={() => handleExport('png')}
-                className="block w-full text-left px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded-t-lg"
-              >
-                PNG
-              </button>
-              <button
-                onClick={() => handleExport('svg')}
-                className="block w-full text-left px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                SVG
-              </button>
-            </div>
+            {showExportMenu && (
+              <div className="absolute right-0 top-full mt-1 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50 min-w-[100px]">
+                <button
+                  onClick={() => {
+                    handleExport('png')
+                    setShowExportMenu(false)
+                  }}
+                  className="block w-full text-left px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded-t-lg"
+                >
+                  PNG
+                </button>
+                <button
+                  onClick={() => {
+                    handleExport('svg')
+                    setShowExportMenu(false)
+                  }}
+                  className="block w-full text-left px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded-b-lg"
+                >
+                  SVG
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

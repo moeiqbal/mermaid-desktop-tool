@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { X, ChevronLeft, ChevronRight, Share2, Download, Minimize2, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react'
+import { X, ChevronLeft, ChevronRight, Share2, Minimize2 } from 'lucide-react'
 import axios from 'axios'
 import MermaidDiagram from './MermaidDiagram'
 import { DiagramMetadata, extractMermaidDiagramsWithMetadata } from '../utils/mermaid'
@@ -16,7 +16,7 @@ const FullScreenDiagram: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [showControls, setShowControls] = useState(true)
-  const [controlsTimeout, setControlsTimeout] = useState<NodeJS.Timeout | null>(null)
+  const [controlsTimeout, setControlsTimeout] = useState<number | null>(null)
 
   const index = parseInt(diagramIndex || '0', 10)
 
@@ -86,12 +86,27 @@ const FullScreenDiagram: React.FC = () => {
     resetControlsTimeout()
   }, [resetControlsTimeout])
 
+  // Smart close function that handles different scenarios
+  const handleClose = useCallback(() => {
+    // Check if this is a popup window or new tab
+    if (window.opener) {
+      // If opened as popup, close the window
+      window.close()
+    } else if (window.history.length > 1) {
+      // If there's history to go back to, use navigate
+      navigate(-1)
+    } else {
+      // If this is a direct link or new tab with no history, redirect to home
+      navigate('/')
+    }
+  }, [navigate])
+
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
       switch (event.key) {
         case 'Escape':
-          navigate(-1)
+          handleClose()
           break
         case 'ArrowLeft':
           if (index > 0) {
@@ -121,7 +136,7 @@ const FullScreenDiagram: React.FC = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyPress)
     }
-  }, [navigate, fileId, index, diagrams.length])
+  }, [navigate, fileId, index, diagrams.length, handleClose])
 
   const handleShare = useCallback(() => {
     const url = window.location.href
@@ -129,13 +144,6 @@ const FullScreenDiagram: React.FC = () => {
     toast.success('Link Copied', 'Diagram link copied to clipboard')
   }, [toast])
 
-  const handleExport = useCallback((format: 'png' | 'svg') => {
-    // This will be handled by the MermaidDiagram component's export functionality
-    const exportButton = document.querySelector(`[data-export="${format}"]`) as HTMLElement
-    if (exportButton) {
-      exportButton.click()
-    }
-  }, [])
 
   const navigateToDiagram = useCallback((newIndex: number) => {
     if (newIndex >= 0 && newIndex < diagrams.length) {
@@ -160,7 +168,7 @@ const FullScreenDiagram: React.FC = () => {
         <div className="text-white text-center">
           <p className="text-xl mb-4">{error || 'Diagram not found'}</p>
           <button
-            onClick={() => navigate(-1)}
+            onClick={handleClose}
             className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors"
           >
             Go Back
@@ -185,7 +193,7 @@ const FullScreenDiagram: React.FC = () => {
           {/* Left side - Title and navigation */}
           <div className="flex items-center gap-4">
             <button
-              onClick={() => navigate(-1)}
+              onClick={handleClose}
               className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white"
               title="Exit Full Screen (ESC)"
             >
