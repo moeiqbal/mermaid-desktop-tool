@@ -1,8 +1,7 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import {
   extractMermaidFromMarkdown,
-  extractMermaidDiagramsWithMetadata,
-  DiagramMetadata
+  extractMermaidDiagramsWithMetadata
 } from '../utils/mermaid'
 
 describe('Mermaid Extraction Utils', () => {
