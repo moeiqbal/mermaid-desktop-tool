@@ -8,6 +8,7 @@ A locally hosted web application for visualizing and managing Mermaid diagrams, 
 - **File Management**: Upload and organize Markdown and Mermaid files
 - **Full Diagram Support**: All Mermaid diagram types (flowchart, sequence, class, state, etc.)
 - **Interactive Controls**: Pan, zoom, export (PNG/SVG/PDF), fullscreen mode
+- **HTML Export**: Export Markdown files with embedded diagrams to standalone HTML with 3 CSS styling options
 - **Premium UI**: Dark mode default with smooth animations
 
 ### 🔍 Markdown/Mermaid Linting
@@ -20,7 +21,30 @@ A locally hosted web application for visualizing and managing Mermaid diagrams, 
 - **Model Parsing**: Upload single files, multiple files, or entire folders
 - **Tree Visualization**: Interactive hierarchy with expandable nodes
 - **Dependency Tracking**: Visual representation of module relationships
+- **Error Handling**: Comprehensive error panel showing parse failures, line numbers, and severity levels
 - **Export Options**: JSON and tree diagram export
+
+## Recent Feature Updates
+
+### 🆕 HTML Export (v2.1)
+Export your Markdown documents with embedded Mermaid diagrams to standalone HTML files:
+- **Three CSS Styling Options**:
+  - Tailwind CSS (Modern utility-first framework styling)
+  - GitHub Style (GitHub-like Markdown rendering)
+  - Custom Theme (Enhanced typography with dark/light mode support)
+- **Interactive Diagrams**: Mermaid diagrams remain fully interactive in exported HTML
+- **Offline Ready**: Exported HTML files work offline (requires internet for initial diagram rendering)
+- **Print Friendly**: Optimized styling for printing
+- **Responsive Design**: Works on desktop, tablet, and mobile devices
+
+### 🛠️ Enhanced Error Handling (v2.1)
+- **YANG Error Panel**: Dedicated component for displaying parse failures
+  - Line numbers and severity levels (error, warning, info)
+  - Expandable/collapsible interface with troubleshooting tips
+  - Copy errors to clipboard functionality
+  - Color-coded error types for quick identification
+- **Improved Close Button**: Smart navigation handling for different browser contexts
+- **Fixed Export Functionality**: Reliable PNG/SVG export with proper state management
 
 ## Quick Start
 
@@ -98,7 +122,7 @@ project-root/
 
 ### File Management
 - `GET /api/files` - List uploaded files
-- `POST /api/files/upload` - Upload files
+- `POST /api/files/upload` - Upload files (supports .md, .mmd, .mermaid, .yang)
 - `GET /api/files/:id/content` - Get file content
 - `PUT /api/files/:id/content` - Update file content
 - `DELETE /api/files/:id` - Delete file
@@ -109,8 +133,8 @@ project-root/
 - `POST /api/lint/markdown/fix` - Auto-fix Markdown issues
 
 ### YANG Processing
-- `POST /api/yang/parse` - Parse single YANG file
-- `POST /api/yang/parse-multiple` - Parse multiple YANG files with dependencies
+- `POST /api/yang/parse` - Parse single YANG file with enhanced error reporting
+- `POST /api/yang/parse-multiple` - Parse multiple YANG files with dependency analysis
 
 ### Health Check
 - `GET /api/health` - Server status and uptime
@@ -203,6 +227,16 @@ docker run -d \
 4. **Hot-Reload Not Working**
    - Ensure volume mounts are correct in `docker-compose.yml`
    - Check that both frontend and backend are running in dev mode
+
+5. **HTML Export Issues**
+   - Ensure browser allows file downloads
+   - Check console for JavaScript errors
+   - Verify Mermaid diagrams are valid before export
+
+6. **YANG Parsing Errors**
+   - Check YANG syntax using the error panel
+   - Verify file encoding (UTF-8 recommended)
+   - Review error details for specific line numbers and suggestions
 
 ## License
 

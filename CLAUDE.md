@@ -48,6 +48,25 @@ npm run lint           # ESLint (v9 config in eslint.config.js)
 npm run typecheck      # TypeScript checking (run this before commits)
 ```
 
+## Recent Feature Additions (v2.1)
+
+### HTML Export System
+- `frontend/src/utils/htmlExport.ts` - Core HTML generation with 3 CSS themes
+- `frontend/src/components/HtmlExportModal.tsx` - Export configuration modal
+- Supports Tailwind, GitHub, and Custom CSS styling options
+- Generates standalone HTML files with embedded interactive Mermaid diagrams
+
+### Enhanced Error Handling
+- `frontend/src/components/YangErrorPanel.tsx` - Comprehensive error display component
+- Structured error reporting with line numbers, severity levels, and troubleshooting tips
+- Copy-to-clipboard functionality and expandable/collapsible interface
+- Enhanced YANG parser error handling with fallback strategies
+
+### UI/UX Improvements
+- Fixed close button behavior in `FullScreenDiagram.tsx` with smart navigation
+- Improved PNG/SVG export reliability in `MermaidDiagram.tsx` with React state management
+- Enhanced notification system integration for user feedback
+
 ## Architecture Overview
 
 This is a **dual-view web application** for Mermaid diagram visualization and YANG model exploration, built as a **React SPA with Express backend**, containerized for ARM64/Apple Silicon.
