@@ -32,32 +32,185 @@ project-root/
 **Task Type**: [FEATURE/BUG_FIX/ENHANCEMENT/REFACTOR]
 
 #### Feature Implementation
-[FEATURE_DESCRIPTION]
+[FEATURE1_DESCRIPTION]
 ```
-<!-- Example:
-For the md and mermaid file parser, provide the ability to create a feature-rich HTML view of the md file with CSS styling. The mermaid diagrams need to be embedded in the markdown file as objects that keep the same functionality.
+<!-- :
+Feature: Safari Browser Compatibility Message
+Description
+Implement a browser detection system that displays a user-friendly "Safari Not Supported" message when users attempt to access the application using Safari (desktop or mobile). This avoids the significant development effort (3-4 weeks) required to fix the 79% test failure rate in Safari while maintaining a good user experience.
+Implementation Requirements
+
+Browser Detection: Detect Safari browser using user agent string matching
+Full-Page Blocking Message: Display a centered, styled message that prevents access to the broken application
+Alternative Browser Suggestions: Provide direct links to download Chrome, Firefox, and Edge
+Professional Appearance: Use existing Tailwind classes to match application design
+Early Detection: Check browser compatibility before attempting to load Mermaid.js or other incompatible components
+
+Technical Details
+
+Add BrowserCompatibilityCheck wrapper component at the App root level
+Use regex pattern /^((?!chrome|android).)*safari/i.test(navigator.userAgent) for Safari detection
+Prevent application initialization if Safari is detected
+No additional dependencies required
+
+User Message Content
+
+Clear heading: "Browser Not Supported"
+Explanation that the application requires features not compatible with Safari
+List of recommended browsers with download links
+Polite apology and mention that Safari support is on the roadmap
 -->
 ```
 
+[FEATURE2_DESCRIPTION]
+```
+<!--:
+Feature: Multi-Architecture Docker Build Support
+Description
+Extend the Docker build configuration to support both ARM64 (Apple Silicon) and AMD64/x86-64 (Intel/AMD) architectures. Currently, the application only builds for ARM64, preventing deployment and usage on x86-64 based systems including most cloud providers, CI/CD pipelines, and Intel-based machines.
+Implementation Requirements
+
+Multi-Platform Build: Configure Docker buildx to create multi-architecture images
+Architecture Targets: Support both linux/amd64 and linux/arm64 platforms
+Build Configuration: Update Dockerfile and build scripts to handle cross-platform compilation
+Base Image Compatibility: Ensure all base images support both architectures
+
+Technical Details
+
+Enable Docker buildx for multi-platform builds
+Add --platform=linux/amd64,linux/arm64 to build commands
+Update CI/CD pipeline to build and push multi-arch images
+Verify all dependencies (Node.js, Python packages if any) are architecture-agnostic
+Test image runs correctly on both architectures
+
+Build Command Example
+bashdocker buildx build --platform linux/amd64,linux/arm64 -t app:latest --push .
+-->
+```
+[FEATURE3_DESCRIPTION]
+```
+<!--
+Feature: Document View Tab - Full Markdown Preview with Inline Diagrams
+Overview
+Add a new "Document View" tab alongside the existing "Mermaid Viewer" and "YANG Explorer" tabs that renders the complete markdown file with inline mermaid diagrams in a formatted, readable view. This feature addresses the user need to review full documents (30% of usage) without leaving the application for VSCode or Obsidian, while preserving all existing Mermaid Viewer functionality.
+Critical Requirements
+⚠️ DO NOT modify any existing Mermaid Viewer functionality - users love the current diagram-focused features
+⚠️ Maintain consistent UI/UX - use the same design system, colors, components, and interaction patterns as the existing application
+⚠️ Preserve all current features - the new tab is additive only, no features should be removed or changed
+Implementation Specifications
+1. Tab Navigation
+
+Add "Document View" as a new tab between "Mermaid Viewer" and "YANG Explorer"
+Use identical tab styling and behavior as existing tabs
+Maintain tab state when switching between views
+
+2. Document View Layout
+
+Main Content Area:
+
+Render full markdown content with user-selected CSS theme (Tailwind/GitHub/Custom/Dark)
+Display mermaid diagrams inline at their original positions in the document
+Use the same container margins and padding as Mermaid Viewer
+
+
+Sidebar Navigation (similar style to existing Diagram Navigator):
+
+Collapsible table of contents showing:
+
+Document headings (H1, H2, H3)
+Diagram list with titles (e.g., "Diagram 1: vCMTS Cluster Physical Architecture")
+
+
+Click to scroll to section/diagram
+Highlight current visible section
+Use same styling as current file browser sidebar
+
+
+
+3. Diagram Interactions in Document View
+
+On Hover: Display subtle overlay controls (same icons/style as Mermaid Viewer):
+
+Zoom in/out buttons
+Pan control
+Export (SVG/PNG)
+Fullscreen
+"Open in Mermaid Viewer" link
+
+
+On Click: Open diagram in modal/lightbox with full Mermaid Viewer controls
+Maintain existing zoom/pan functionality from Mermaid Viewer
+
+4. Theme Selector
+
+Reuse the existing Export HTML theme selector component
+Place theme selector in the top-right (similar position to Export HTML button)
+Options: Tailwind CSS, GitHub Style, Custom Theme, Dark Mode toggle
+Apply theme changes in real-time without page refresh
+
+5. Cross-Tab Synchronization
+
+Clicking "Open in Mermaid Viewer" on a diagram should:
+
+Switch to Mermaid Viewer tab
+Highlight/scroll to that specific diagram
+
+
+Optional: Add breadcrumb showing "Viewing Diagram X of Y" when coming from Document View
+
+6. Technical Considerations
+
+Use the same markdown parsing library already in use
+Reuse existing mermaid rendering components/logic
+Share CSS theme definitions with Export HTML feature
+Ensure diagram IDs are consistent between Document View and Mermaid Viewer
+Maintain performance for large documents (lazy load diagrams if needed)
+
+User Stories
+
+As an architect, I want to review my complete documentation with embedded diagrams without switching to VSCode
+As a user, I want to quickly switch between focused diagram work (75% of time) and document review (30% of time)
+As a user, I want to see diagrams in their document context while retaining ability to interact with them
+
+Success Criteria
+
+ New Document View tab is visible and functional
+ All existing Mermaid Viewer features remain unchanged
+ Markdown renders with selected CSS theme
+ Diagrams appear inline and are interactive
+ Sidebar navigation works for headings and diagrams
+ Can switch between Document View and Mermaid Viewer seamlessly
+ UI consistency maintained throughout
+ No performance degradation for existing features
+
+Design Constraints
+
+Match existing color scheme, fonts, and spacing
+Use the same component library (Lucide icons, existing button styles)
+Maintain current responsive breakpoints
+Follow established interaction patterns (hover states, click behaviors)
+Keep the same header height and layout structure
+
+Note for Implementation
+The goal is to enhance the application with document preview capabilities while preserving the excellent diagram-focused workflow that users currently love. Think of this as adding a "Preview" mode similar to VSCode's markdown preview, but with the rich diagram interactions users expect from this application.
+-->
+```
 #### Bug Fixes
 [BUG_1_DESCRIPTION]
 ```
-<!-- Example:
-When opening the mermaid diagram in new tab or viewing it in the page, clicking on the "x" button to close and return to the main screen is not working. The "x" should close the tab entirely.
+<!-- Example
 -->
 ```
 
 [BUG_2_DESCRIPTION]
 ```
-<!-- Example:
-When running the yang explorer, some yang models have an error and don't render anything. Errors are happening silently. Need a dedicated error panel showing parse failure reasons.
+<!-- Example
 -->
 ```
 
 [BUG_3_DESCRIPTION]
 ```
-<!-- Example:
-The diagram export button in mermaid view does not work. The button should allow export to PNG/SVG (functionality exists but button is broken).
+<!-- Example
 -->
 ```
 
