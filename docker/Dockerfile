@@ -1,5 +1,5 @@
-# Multi-stage build optimized for ARM architecture (Apple Silicon)
-FROM --platform=linux/arm64 node:18-alpine AS base
+# Multi-stage build supporting both ARM64 and AMD64 architectures
+FROM --platform=$BUILDPLATFORM node:18-alpine AS base
 
 # Install system dependencies
 RUN apk add --no-cache libc6-compat python3 make g++
@@ -21,8 +21,12 @@ COPY frontend/ ./frontend/
 RUN cd frontend && npm ci
 RUN cd frontend && npm run build
 
-# Production image
-FROM --platform=linux/arm64 node:18-alpine AS runner
+# Production image - automatically uses target platform (linux/amd64 or linux/arm64)
+FROM node:18-alpine AS runner
+
+# Build arguments for cross-compilation awareness
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
 
 # Install dumb-init for proper signal handling
 RUN apk add --no-cache dumb-init

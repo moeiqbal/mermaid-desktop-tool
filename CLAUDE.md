@@ -5,6 +5,28 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Essential Commands
 
 ### Building and Running
+
+#### Multi-Architecture Builds (Recommended)
+```bash
+# Multi-architecture build for both ARM64 and AMD64
+./scripts/build-multiarch.sh mermaid-yang-app:latest
+
+# Build for specific architecture (loadable locally)
+./scripts/build-single-arch.sh arm64 mermaid-yang-app:arm64
+./scripts/build-single-arch.sh amd64 mermaid-yang-app:amd64
+
+# Direct buildx commands
+docker buildx build --platform linux/arm64 -t mermaid-yang-app:arm64 -f docker/Dockerfile --load .
+docker buildx build --platform linux/amd64 -t mermaid-yang-app:amd64 -f docker/Dockerfile --load .
+
+# Development build with auto-detection
+./scripts/build-dev.sh auto
+
+# Development build for specific architecture
+./scripts/build-dev.sh arm64  # or amd64
+```
+
+#### Legacy Single-Architecture Builds
 ```bash
 # Production build and run (single container)
 docker build -t mermaid-yang-app -f docker/Dockerfile .
@@ -17,6 +39,14 @@ docker-compose up dev --build
 # - Frontend dev server: http://localhost:5173 (with hot-reload)
 # - Backend API: http://localhost:3000/api/
 # - Production app: http://localhost:3000
+```
+
+#### Docker Buildx Setup (One-time)
+If multi-arch builds fail, ensure buildx is properly configured:
+```bash
+# Create and use multi-arch builder
+docker buildx create --name multiarch-builder --use
+docker buildx inspect --bootstrap
 ```
 
 ### Development Commands

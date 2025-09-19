@@ -6,6 +6,7 @@ services:
       context: .
       dockerfile: docker/Dockerfile
       platforms:
+        - linux/amd64
         - linux/arm64
     ports:
       - "3000:3000"
@@ -21,7 +22,7 @@ services:
       - NODE_ENV=development
       - PORT=3000
     restart: unless-stopped
-    platform: linux/arm64
+    # platform will be automatically detected
 
   # Development service with hot-reloading
   dev:
@@ -29,6 +30,7 @@ services:
       context: .
       dockerfile: docker/Dockerfile.dev
       platforms:
+        - linux/amd64
         - linux/arm64
     ports:
       - "3000:3000"
@@ -44,4 +46,4 @@ services:
       - PORT=3000
       - VITE_PORT=5173
     command: npm run dev
-    platform: linux/arm64
+    # platform will be automatically detected

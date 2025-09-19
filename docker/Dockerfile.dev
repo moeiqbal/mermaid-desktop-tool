@@ -1,5 +1,9 @@
-# Development Dockerfile with hot-reloading for ARM architecture
-FROM --platform=linux/arm64 node:18-alpine
+# Development Dockerfile with hot-reloading supporting multi-architecture
+FROM node:18-alpine
+
+# Build arguments for architecture awareness
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
 
 # Install system dependencies
 RUN apk add --no-cache libc6-compat python3 make g++ git
