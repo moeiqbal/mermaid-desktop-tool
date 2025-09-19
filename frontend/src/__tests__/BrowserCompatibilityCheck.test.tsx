@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import BrowserCompatibilityCheck from '../components/BrowserCompatibilityCheck'
 
@@ -11,9 +11,17 @@ const mockUserAgent = (userAgent: string) => {
 }
 
 describe('BrowserCompatibilityCheck', () => {
+  let consoleSpy: any
+
   beforeEach(() => {
     // Reset navigator.userAgent before each test
     vi.clearAllMocks()
+    // Mock console.log to capture debug output
+    consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+  })
+
+  afterEach(() => {
+    consoleSpy.mockRestore()
   })
 
   it('should render children when not Safari', () => {
@@ -148,6 +156,40 @@ describe('BrowserCompatibilityCheck', () => {
   it('should not block Chrome with Safari in user agent string', () => {
     // Mock Chrome user agent that contains "Safari" (which is common)
     mockUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36')
+
+    render(
+      <BrowserCompatibilityCheck>
+        <div data-testid="app-content">App Content</div>
+      </BrowserCompatibilityCheck>
+    )
+
+    expect(screen.getByTestId('app-content')).toBeInTheDocument()
+    expect(screen.queryByText('Browser Not Supported')).not.toBeInTheDocument()
+  })
+
+  it('should log debug information for browser detection', () => {
+    const safariUA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Version/14.1.1 Safari/537.36'
+    mockUserAgent(safariUA)
+
+    render(
+      <BrowserCompatibilityCheck>
+        <div data-testid="app-content">App Content</div>
+      </BrowserCompatibilityCheck>
+    )
+
+    expect(consoleSpy).toHaveBeenCalledWith('🔍 Browser detection:', expect.objectContaining({
+      userAgent: safariUA,
+      isSafariRegex: expect.any(Boolean),
+      isMobileSafari: expect.any(Boolean)
+    }))
+  })
+
+  it('should handle undefined navigator gracefully', () => {
+    // Mock undefined navigator (server-side rendering scenario)
+    Object.defineProperty(window, 'navigator', {
+      value: undefined,
+      configurable: true
+    })
 
     render(
       <BrowserCompatibilityCheck>

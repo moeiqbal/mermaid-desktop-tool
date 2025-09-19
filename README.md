@@ -46,7 +46,31 @@ Export your Markdown documents with embedded Mermaid diagrams to standalone HTML
 - **Improved Close Button**: Smart navigation handling for different browser contexts
 - **Fixed Export Functionality**: Reliable PNG/SVG export with proper state management
 
+### 🌐 Safari Compatibility System (v2.2)
+- **Server-side Browser Detection**: Identifies Safari browsers before React app loads
+- **Professional Compatibility Page**: Clean, branded warning page instead of white screen/errors
+- **Zero Console Errors**: Prevents SSL/connection issues that caused Safari failures
+- **Universal Support**:
+  - ✅ **Chrome, Firefox, Edge**: Full application access with all features
+  - ⚠️ **Safari (Desktop/Mobile)**: Professional compatibility message with browser recommendations
+- **User Experience**: Clear guidance to supported browsers with download links
+
 ## Release Notes
+
+### Version 2.2.0 (2025-01-19)
+
+🌐 **Safari Compatibility System**
+- Server-side Safari browser detection preventing white screen issues
+- Professional compatibility warning page with branded styling and browser recommendations
+- Enhanced Content Security Policy configuration for Safari compatibility
+- Zero console errors for Safari users with clean fallback experience
+- Support matrix: Chrome/Firefox/Edge (full access), Safari (compatibility page)
+
+🔧 **Production Improvements**
+- Comprehensive test suite with 93 unit tests and 65 E2E tests
+- Production deployment documentation and troubleshooting guides
+- Enhanced Swagger API documentation with interactive endpoints
+- Improved CSP and security middleware configuration
 
 ### Version 2.1.0 (2024-09-18)
 

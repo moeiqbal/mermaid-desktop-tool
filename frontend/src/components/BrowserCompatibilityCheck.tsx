@@ -19,17 +19,26 @@ const BrowserCompatibilityCheck: React.FC<BrowserCompatibilityCheckProps> = ({ c
 
     const userAgent = navigator.userAgent.toLowerCase()
 
+    // Detection logic
+    const isSafariRegex = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
+    const isMobileSafari = /iphone|ipad|ipod/.test(userAgent) && /safari/.test(userAgent) && !/chrome/.test(userAgent)
+
+    // Debug logging for production troubleshooting
+    console.log('🔍 Browser detection:', {
+      userAgent: navigator.userAgent,
+      isSafariRegex,
+      isMobileSafari
+    })
+
     // Detect Safari but exclude Chrome-based browsers
-    return /^((?!chrome|android).)*safari/i.test(navigator.userAgent) ||
-           // Additional check for mobile Safari on iOS
-           (/iphone|ipad|ipod/.test(userAgent) && /safari/.test(userAgent) && !/chrome/.test(userAgent))
+    return isSafariRegex || isMobileSafari
   }
 
   // If Safari is detected, show compatibility message
   if (isSafari()) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center p-4">
-        <div className="max-w-lg w-full bg-white dark:bg-dark-900 rounded-lg shadow-premium dark:shadow-premium-dark border border-gray-200 dark:border-dark-700 p-8 text-center fade-in">
+        <div className="max-w-lg w-full bg-white dark:bg-gray-900 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-8 text-center">
           {/* Warning Icon */}
           <div className="mb-6">
             <div className="w-20 h-20 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -58,7 +67,7 @@ const BrowserCompatibilityCheck: React.FC<BrowserCompatibilityCheckProps> = ({ c
                 href="https://www.google.com/chrome/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between p-4 bg-gray-50 dark:bg-dark-800 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-700 transition-all duration-200 hover-lift group"
+                className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 group"
               >
                 <div className="flex items-center">
                   <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mr-3">
@@ -77,7 +86,7 @@ const BrowserCompatibilityCheck: React.FC<BrowserCompatibilityCheckProps> = ({ c
                 href="https://www.mozilla.org/firefox/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between p-4 bg-gray-50 dark:bg-dark-800 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-700 transition-all duration-200 hover-lift group"
+                className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 group"
               >
                 <div className="flex items-center">
                   <div className="w-10 h-10 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center mr-3">
@@ -98,7 +107,7 @@ const BrowserCompatibilityCheck: React.FC<BrowserCompatibilityCheckProps> = ({ c
                 href="https://www.microsoft.com/edge"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between p-4 bg-gray-50 dark:bg-dark-800 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-700 transition-all duration-200 hover-lift group"
+                className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 group"
               >
                 <div className="flex items-center">
                   <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mr-3">
@@ -117,7 +126,7 @@ const BrowserCompatibilityCheck: React.FC<BrowserCompatibilityCheckProps> = ({ c
           </div>
 
           {/* Footer Message */}
-          <div className="pt-6 border-t border-gray-200 dark:border-dark-700">
+          <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
             <p className="text-sm text-gray-500 dark:text-gray-400">
               We apologize for the inconvenience. Safari support is on our roadmap and we&apos;re working to resolve compatibility issues in future updates.
             </p>
