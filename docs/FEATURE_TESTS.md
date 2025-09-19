@@ -164,8 +164,24 @@ This document outlines comprehensive test cases for the Mermaid Viewer feature (
 |---------|---------|-----------------|---------|
 | BC-001 | Chrome 120+ | All features | ✅ |
 | BC-002 | Firefox 121+ | All features | ✅ |
-| BC-003 | Safari 17+ | All features | ✅ |
+| BC-003 | Safari 17+ | Compatibility warning displayed | ✅ |
 | BC-004 | Edge 120+ | All features | ✅ |
+
+### Safari Compatibility Tests
+| Test ID | Test Case | Expected Result | Status |
+|---------|-----------|-----------------|---------|
+| SC-001 | Safari Desktop Detection | Browser compatibility warning displayed | ✅ |
+| SC-002 | Safari iOS Detection | Browser compatibility warning displayed | ✅ |
+| SC-003 | Safari iPad Detection | Browser compatibility warning displayed | ✅ |
+| SC-004 | Chrome with Safari in User Agent | Application loads normally (not blocked) | ✅ |
+| SC-005 | Firefox Browser Access | Application loads normally (not blocked) | ✅ |
+| SC-006 | Edge Browser Access | Application loads normally (not blocked) | ✅ |
+| SC-007 | Compatibility Message Content | Clear heading, explanation, and browser recommendations | ✅ |
+| SC-008 | Download Links Functionality | Chrome, Firefox, Edge links work correctly | ✅ |
+| SC-009 | Links Open in New Tab | All browser download links have target="_blank" | ✅ |
+| SC-010 | Responsive Design on Mobile Safari | Compatibility message responsive on iOS devices | ✅ |
+| SC-011 | Dark Mode Compatibility Message | Message displays correctly in both light and dark themes | ✅ |
+| SC-012 | Professional Styling | Message uses consistent Tailwind classes and brand styling | ✅ |
 
 ### Responsive Design Tests
 | Test ID | Viewport | Layout Test | Status |
@@ -187,8 +203,8 @@ This document outlines comprehensive test cases for the Mermaid Viewer feature (
 
 ## Test Summary
 
-**Total Test Cases:** 89
-**Passing Tests:** 89
+**Total Test Cases:** 101
+**Passing Tests:** 101
 **Failing Tests:** 0
 **Pass Rate:** 100%
 
@@ -201,6 +217,7 @@ This document outlines comprehensive test cases for the Mermaid Viewer feature (
 - ✅ Performance and Memory Management
 - ✅ Accessibility Compliance
 - ✅ Cross-browser Compatibility
+- ✅ Safari Compatibility Warning System
 - ✅ Responsive Design
 - ✅ Integration Testing
 
