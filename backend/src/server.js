@@ -9,6 +9,7 @@ import { fileURLToPath } from 'url'
 import fileRoutes from './routes/files.js'
 import lintRoutes from './routes/lint.js'
 import yangRoutes from './routes/yang.js'
+import { specs, swaggerUi } from './config/swagger.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -16,6 +17,13 @@ const __dirname = path.dirname(__filename)
 const app = express()
 const PORT = process.env.PORT || 3000
 const NODE_ENV = process.env.NODE_ENV || 'development'
+
+// Debug logging
+console.log('🐛 Environment variables:', {
+  NODE_ENV: process.env.NODE_ENV,
+  COMPUTED_NODE_ENV: NODE_ENV,
+  PORT: PORT
+})
 
 // Security middleware
 app.use(helmet({
@@ -50,6 +58,13 @@ if (NODE_ENV === 'production') {
   const frontendPath = path.join(__dirname, '../../frontend/dist')
   app.use(express.static(frontendPath))
 }
+
+// Swagger API documentation
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(specs, {
+  explorer: true,
+  customCss: '.swagger-ui .topbar { display: none }',
+  customSiteTitle: 'Mermaid & YANG API Documentation'
+}))
 
 // API routes
 app.use('/api/files', fileRoutes)
@@ -87,10 +102,40 @@ app.use((req, res) => {
   res.status(404).json({ error: 'Endpoint not found' })
 })
 
+/**
+ * @swagger
+ * /api/health:
+ *   get:
+ *     tags: [Health]
+ *     summary: Health check endpoint
+ *     description: Returns the current status of the API server
+ *     responses:
+ *       200:
+ *         description: Server is healthy
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: healthy
+ *                 timestamp:
+ *                   type: string
+ *                   format: date-time
+ *                 environment:
+ *                   type: string
+ *                   example: development
+ *                 uptime:
+ *                   type: number
+ *                   description: Server uptime in seconds
+ */
+
 // Start server
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server running on port ${PORT} in ${NODE_ENV} mode`)
-  console.log(`📝 API Documentation: http://localhost:${PORT}/api/health`)
+  console.log(`📝 API Documentation: http://localhost:${PORT}/api/docs`)
+  console.log(`🩺 Health Check: http://localhost:${PORT}/api/health`)
 
   if (NODE_ENV === 'development') {
     console.log(`🎨 Frontend dev server: http://localhost:5173`)

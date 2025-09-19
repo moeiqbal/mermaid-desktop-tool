@@ -10,16 +10,18 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "express": "^4.21.2",
-    "cors": "^2.8.5",
-    "multer": "^2.0.2",
-    "helmet": "^8.0.0",
     "compression": "^1.7.5",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
     "express-rate-limit": "^7.4.1",
-    "yang-js": "^0.24.70",
+    "helmet": "^8.0.0",
+    "jsdom": "^25.0.1",
     "markdownlint": "^0.36.1",
     "mermaid": "^11.4.1",
-    "jsdom": "^25.0.1"
+    "multer": "^2.0.2",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "yang-js": "^0.24.70"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"

@@ -5,7 +5,52 @@ import Yang from 'yang-js'
 
 const router = express.Router()
 
-// Parse YANG content using node-yang library
+/**
+ * @swagger
+ * /api/yang/parse:
+ *   post:
+ *     tags: [YANG]
+ *     summary: Parse YANG content
+ *     description: Parse and validate YANG model content, extracting structure and metadata
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - content
+ *             properties:
+ *               content:
+ *                 type: string
+ *                 description: YANG model content to parse
+ *                 example: |
+ *                   module example-module {
+ *                     namespace "http://example.com";
+ *                     prefix "ex";
+ *
+ *                     container config {
+ *                       leaf hostname {
+ *                         type string;
+ *                       }
+ *                     }
+ *                   }
+ *               filename:
+ *                 type: string
+ *                 default: temp.yang
+ *                 description: Optional filename for the YANG content
+ *     responses:
+ *       200:
+ *         description: YANG parsing completed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/YangParseResult'
+ *       400:
+ *         $ref: '#/components/responses/BadRequest'
+ *       500:
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 router.post('/parse', async (req, res) => {
   try {
     const { content, filename = 'temp.yang' } = req.body
@@ -44,7 +89,84 @@ router.post('/parse', async (req, res) => {
   }
 })
 
-// Parse multiple YANG files
+/**
+ * @swagger
+ * /api/yang/parse-multiple:
+ *   post:
+ *     tags: [YANG]
+ *     summary: Parse multiple YANG files
+ *     description: Parse multiple YANG files and analyze their dependencies and relationships
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - files
+ *             properties:
+ *               files:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     name:
+ *                       type: string
+ *                       description: Filename
+ *                     content:
+ *                       type: string
+ *                       description: YANG file content
+ *                 description: Array of YANG files to parse
+ *                 example:
+ *                   - name: "module1.yang"
+ *                     content: "module mod1 { namespace 'http://example.com/1'; prefix 'm1'; }"
+ *                   - name: "module2.yang"
+ *                     content: "module mod2 { namespace 'http://example.com/2'; prefix 'm2'; }"
+ *     responses:
+ *       200:
+ *         description: Multiple YANG files parsed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 files:
+ *                   type: array
+ *                   items:
+ *                     allOf:
+ *                       - $ref: '#/components/schemas/YangParseResult'
+ *                       - type: object
+ *                         properties:
+ *                           filename:
+ *                             type: string
+ *                 dependencies:
+ *                   type: object
+ *                   description: Module dependency mapping
+ *                 graph:
+ *                   type: object
+ *                   properties:
+ *                     nodes:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                     edges:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                 summary:
+ *                   type: object
+ *                   properties:
+ *                     totalModules:
+ *                       type: number
+ *                     validModules:
+ *                       type: number
+ *                     totalErrors:
+ *                       type: number
+ *       400:
+ *         $ref: '#/components/responses/BadRequest'
+ *       500:
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 router.post('/parse-multiple', async (req, res) => {
   try {
     const { files } = req.body

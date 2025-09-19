@@ -48,7 +48,25 @@ const upload = multer({
   }
 })
 
-// Get all uploaded files
+/**
+ * @swagger
+ * /api/files:
+ *   get:
+ *     tags: [Files]
+ *     summary: Get all uploaded files
+ *     description: Retrieve a list of all uploaded files with metadata
+ *     responses:
+ *       200:
+ *         description: List of files retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/File'
+ *       500:
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 router.get('/', async (req, res) => {
   try {
     const uploadsDir = path.join(__dirname, '../../../uploads')
@@ -92,7 +110,36 @@ router.get('/', async (req, res) => {
   }
 })
 
-// Get file content
+/**
+ * @swagger
+ * /api/files/{fileId}/content:
+ *   get:
+ *     tags: [Files]
+ *     summary: Get file content
+ *     description: Retrieve the content of a specific file by its ID
+ *     parameters:
+ *       - in: path
+ *         name: fileId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The file identifier
+ *     responses:
+ *       200:
+ *         description: File content retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 content:
+ *                   type: string
+ *                   description: The file content as a string
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
+ *       500:
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 router.get('/:fileId/content', async (req, res) => {
   try {
     const { fileId } = req.params
@@ -109,7 +156,57 @@ router.get('/:fileId/content', async (req, res) => {
   }
 })
 
-// Upload files
+/**
+ * @swagger
+ * /api/files/upload:
+ *   post:
+ *     tags: [Files]
+ *     summary: Upload files
+ *     description: Upload one or more files (.md, .mmd, .mermaid, .yang)
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               files:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
+ *                 description: Files to upload (max 10 files, 10MB each)
+ *     responses:
+ *       200:
+ *         description: Files uploaded successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Successfully uploaded 2 file(s)"
+ *                 files:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                       name:
+ *                         type: string
+ *                       size:
+ *                         type: number
+ *                       type:
+ *                         type: string
+ *                       path:
+ *                         type: string
+ *       400:
+ *         $ref: '#/components/responses/BadRequest'
+ *       500:
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 router.post('/upload', upload.array('files'), (req, res) => {
   try {
     if (!req.files || req.files.length === 0) {

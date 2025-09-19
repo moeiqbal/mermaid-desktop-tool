@@ -1,0 +1,186 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - img
+  - generic [ref=e4]:
+    - generic:
+      - img
+    - generic [ref=e5]:
+      - generic [ref=e9]:
+        - heading "Mermaid & YANG Visualization API 1.0.0 OAS 3.0" [level=2] [ref=e11]:
+          - text: Mermaid & YANG Visualization API
+          - generic [ref=e12]:
+            - generic [ref=e14]: 1.0.0
+            - generic [ref=e16]: OAS 3.0
+        - paragraph [ref=e19]: API for managing Mermaid diagrams, Markdown files, YANG models, and linting functionality
+        - link "Contact API Support" [ref=e21] [cursor=pointer]:
+          - /url: mailto:support@example.com
+      - generic [ref=e25]:
+        - generic [ref=e26]: Servers
+        - combobox [ref=e29]:
+          - option "http://localhost:3000 - Development server" [selected]
+      - generic [ref=e32]:
+        - heading "Health API health check endpoints Expand operation" [level=3] [ref=e35] [cursor=pointer]:
+          - link "Health" [ref=e36] [cursor=pointer]:
+            - /url: "#/Health"
+            - generic [ref=e37] [cursor=pointer]: Health
+          - paragraph [ref=e40] [cursor=pointer]: API health check endpoints
+          - button "Expand operation" [ref=e41] [cursor=pointer]:
+            - img [ref=e42] [cursor=pointer]
+        - generic [ref=e45]:
+          - heading "Files File management operations Collapse operation" [level=3] [ref=e46] [cursor=pointer]:
+            - link "Files" [ref=e47] [cursor=pointer]:
+              - /url: "#/Files"
+              - generic [ref=e48] [cursor=pointer]: Files
+            - paragraph [ref=e51] [cursor=pointer]: File management operations
+            - button "Collapse operation" [expanded] [ref=e52] [cursor=pointer]:
+              - img [ref=e53] [cursor=pointer]
+          - generic [ref=e56]:
+            - generic [ref=e59] [cursor=pointer]:
+              - button "GET /api/files Get all uploaded files" [ref=e60] [cursor=pointer]:
+                - generic [ref=e61] [cursor=pointer]: GET
+                - generic [ref=e62] [cursor=pointer]:
+                  - link "/api/files" [ref=e64] [cursor=pointer]:
+                    - /url: "#/Files/get_api_files"
+                    - generic [ref=e65] [cursor=pointer]:
+                      - text: /api
+                      - text: /files
+                  - generic [ref=e66] [cursor=pointer]: Get all uploaded files
+              - button "get /api/files" [ref=e69] [cursor=pointer]:
+                - img [ref=e70] [cursor=pointer]
+            - generic [ref=e74] [cursor=pointer]:
+              - 'button "GET /api/files/{fileId}/content Get file content" [ref=e75] [cursor=pointer]':
+                - generic [ref=e76] [cursor=pointer]: GET
+                - generic [ref=e77] [cursor=pointer]:
+                  - 'link "/api/files/{fileId}/content" [ref=e79] [cursor=pointer]':
+                    - /url: "#/Files/get_api_files__fileId__content"
+                    - generic [ref=e80] [cursor=pointer]:
+                      - text: /api
+                      - text: /files
+                      - text: "/{fileId}"
+                      - text: /content
+                  - generic [ref=e81] [cursor=pointer]: Get file content
+              - 'button "get /api/files/{fileId}/content" [ref=e84] [cursor=pointer]':
+                - img [ref=e85] [cursor=pointer]
+            - generic [ref=e89] [cursor=pointer]:
+              - button "POST /api/files/upload Upload files" [ref=e90] [cursor=pointer]:
+                - generic [ref=e91] [cursor=pointer]: POST
+                - generic [ref=e92] [cursor=pointer]:
+                  - link "/api/files/upload" [ref=e94] [cursor=pointer]:
+                    - /url: "#/Files/post_api_files_upload"
+                    - generic [ref=e95] [cursor=pointer]:
+                      - text: /api
+                      - text: /files
+                      - text: /upload
+                  - generic [ref=e96] [cursor=pointer]: Upload files
+              - button "post /api/files/upload" [ref=e99] [cursor=pointer]:
+                - img [ref=e100] [cursor=pointer]
+        - generic [ref=e103]:
+          - heading "Linting Markdown and Mermaid linting operations Collapse operation" [level=3] [ref=e104] [cursor=pointer]:
+            - link "Linting" [ref=e105] [cursor=pointer]:
+              - /url: "#/Linting"
+              - generic [ref=e106] [cursor=pointer]: Linting
+            - paragraph [ref=e109] [cursor=pointer]: Markdown and Mermaid linting operations
+            - button "Collapse operation" [expanded] [ref=e110] [cursor=pointer]:
+              - img [ref=e111] [cursor=pointer]
+          - generic [ref=e114]:
+            - generic [ref=e117] [cursor=pointer]:
+              - button "GET /api/lint/config Get linting configuration" [ref=e118] [cursor=pointer]:
+                - generic [ref=e119] [cursor=pointer]: GET
+                - generic [ref=e120] [cursor=pointer]:
+                  - link "/api/lint/config" [ref=e122] [cursor=pointer]:
+                    - /url: "#/Linting/get_api_lint_config"
+                    - generic [ref=e123] [cursor=pointer]:
+                      - text: /api
+                      - text: /lint
+                      - text: /config
+                  - generic [ref=e124] [cursor=pointer]: Get linting configuration
+              - button "get /api/lint/config" [ref=e127] [cursor=pointer]:
+                - img [ref=e128] [cursor=pointer]
+            - generic [ref=e132] [cursor=pointer]:
+              - button "POST /api/lint/markdown Lint Markdown content" [ref=e133] [cursor=pointer]:
+                - generic [ref=e134] [cursor=pointer]: POST
+                - generic [ref=e135] [cursor=pointer]:
+                  - link "/api/lint/markdown" [ref=e137] [cursor=pointer]:
+                    - /url: "#/Linting/post_api_lint_markdown"
+                    - generic [ref=e138] [cursor=pointer]:
+                      - text: /api
+                      - text: /lint
+                      - text: /markdown
+                  - generic [ref=e139] [cursor=pointer]: Lint Markdown content
+              - button "post /api/lint/markdown" [ref=e142] [cursor=pointer]:
+                - img [ref=e143] [cursor=pointer]
+            - generic [ref=e147] [cursor=pointer]:
+              - button "POST /api/lint/mermaid Lint Mermaid content" [ref=e148] [cursor=pointer]:
+                - generic [ref=e149] [cursor=pointer]: POST
+                - generic [ref=e150] [cursor=pointer]:
+                  - link "/api/lint/mermaid" [ref=e152] [cursor=pointer]:
+                    - /url: "#/Linting/post_api_lint_mermaid"
+                    - generic [ref=e153] [cursor=pointer]:
+                      - text: /api
+                      - text: /lint
+                      - text: /mermaid
+                  - generic [ref=e154] [cursor=pointer]: Lint Mermaid content
+              - button "post /api/lint/mermaid" [ref=e157] [cursor=pointer]:
+                - img [ref=e158] [cursor=pointer]
+        - generic [ref=e161]:
+          - heading "YANG YANG model parsing and processing Collapse operation" [level=3] [ref=e162] [cursor=pointer]:
+            - link "YANG" [ref=e163] [cursor=pointer]:
+              - /url: "#/YANG"
+              - generic [ref=e164] [cursor=pointer]: YANG
+            - paragraph [ref=e167] [cursor=pointer]: YANG model parsing and processing
+            - button "Collapse operation" [expanded] [ref=e168] [cursor=pointer]:
+              - img [ref=e169] [cursor=pointer]
+          - generic [ref=e172]:
+            - generic [ref=e175] [cursor=pointer]:
+              - button "POST /api/yang/parse Parse YANG content" [ref=e176] [cursor=pointer]:
+                - generic [ref=e177] [cursor=pointer]: POST
+                - generic [ref=e178] [cursor=pointer]:
+                  - link "/api/yang/parse" [ref=e180] [cursor=pointer]:
+                    - /url: "#/YANG/post_api_yang_parse"
+                    - generic [ref=e181] [cursor=pointer]:
+                      - text: /api
+                      - text: /yang
+                      - text: /parse
+                  - generic [ref=e182] [cursor=pointer]: Parse YANG content
+              - button "post /api/yang/parse" [ref=e185] [cursor=pointer]:
+                - img [ref=e186] [cursor=pointer]
+            - generic [ref=e190] [cursor=pointer]:
+              - button "POST /api/yang/parse-multiple Parse multiple YANG files" [ref=e191] [cursor=pointer]:
+                - generic [ref=e192] [cursor=pointer]: POST
+                - generic [ref=e193] [cursor=pointer]:
+                  - link "/api/yang/parse-multiple" [ref=e195] [cursor=pointer]:
+                    - /url: "#/YANG/post_api_yang_parse_multiple"
+                    - generic [ref=e196] [cursor=pointer]:
+                      - text: /api
+                      - text: /yang
+                      - text: /parse-multiple
+                  - generic [ref=e197] [cursor=pointer]: Parse multiple YANG files
+              - button "post /api/yang/parse-multiple" [ref=e200] [cursor=pointer]:
+                - img [ref=e201] [cursor=pointer]
+      - generic [ref=e205]:
+        - heading "Schemas" [level=4] [ref=e206] [cursor=pointer]:
+          - button "Schemas" [expanded] [ref=e207] [cursor=pointer]:
+            - generic [ref=e208] [cursor=pointer]: Schemas
+            - img [ref=e209] [cursor=pointer]
+        - generic [ref=e211]:
+          - button "File" [ref=e214] [cursor=pointer]:
+            - generic [ref=e217] [cursor=pointer]: File
+          - button "Diagram" [ref=e221] [cursor=pointer]:
+            - generic [ref=e224] [cursor=pointer]: Diagram
+          - button "LintResult" [ref=e228] [cursor=pointer]:
+            - generic [ref=e231] [cursor=pointer]: LintResult
+          - button "LintIssue" [ref=e235] [cursor=pointer]:
+            - generic [ref=e238] [cursor=pointer]: LintIssue
+          - button "YangParseResult" [ref=e242] [cursor=pointer]:
+            - generic [ref=e245] [cursor=pointer]: YangParseResult
+          - button "YangModule" [ref=e249] [cursor=pointer]:
+            - generic [ref=e252] [cursor=pointer]: YangModule
+          - button "YangNode" [ref=e256] [cursor=pointer]:
+            - generic [ref=e259] [cursor=pointer]: YangNode
+          - button "YangMetadata" [ref=e263] [cursor=pointer]:
+            - generic [ref=e266] [cursor=pointer]: YangMetadata
+          - button "Error" [ref=e270] [cursor=pointer]:
+            - generic [ref=e273] [cursor=pointer]: Error
+```

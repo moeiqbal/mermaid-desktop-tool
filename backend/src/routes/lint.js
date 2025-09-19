@@ -9,7 +9,48 @@ const mermaid = mermaidPkg.default || mermaidPkg
 
 const router = express.Router()
 
-// Get available linting presets and rules
+/**
+ * @swagger
+ * /api/lint/config:
+ *   get:
+ *     tags: [Linting]
+ *     summary: Get linting configuration
+ *     description: Retrieve available linting presets, rules, and configuration options
+ *     responses:
+ *       200:
+ *         description: Linting configuration retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 presets:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                   description: Available linting presets
+ *                 defaultPreset:
+ *                   type: string
+ *                   example: default
+ *                 markdownRules:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                   description: Available markdown linting rules
+ *                 mermaidConfig:
+ *                   type: object
+ *                   properties:
+ *                     supportedTypes:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *                     securityLevel:
+ *                       type: string
+ *                     theme:
+ *                       type: string
+ *       500:
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 router.get('/config', (req, res) => {
   try {
     res.json({
@@ -48,7 +89,42 @@ const initializeMermaid = () => {
   }
 }
 
-// Lint Markdown content
+/**
+ * @swagger
+ * /api/lint/markdown:
+ *   post:
+ *     tags: [Linting]
+ *     summary: Lint Markdown content
+ *     description: Validate and analyze Markdown content for linting issues
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - content
+ *             properties:
+ *               content:
+ *                 type: string
+ *                 description: Markdown content to lint
+ *                 example: "# My Heading\\n\\nSome content here"
+ *               preset:
+ *                 type: string
+ *                 default: default
+ *                 description: Linting preset to use
+ *     responses:
+ *       200:
+ *         description: Markdown linting completed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/LintResult'
+ *       400:
+ *         $ref: '#/components/responses/BadRequest'
+ *       500:
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 router.post('/markdown', (req, res) => {
   try {
     const { content, preset = 'default' } = req.body
@@ -102,7 +178,41 @@ router.post('/markdown', (req, res) => {
   }
 })
 
-// Lint Mermaid content
+/**
+ * @swagger
+ * /api/lint/mermaid:
+ *   post:
+ *     tags: [Linting]
+ *     summary: Lint Mermaid content
+ *     description: Validate Mermaid diagram syntax and structure
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - content
+ *             properties:
+ *               content:
+ *                 type: string
+ *                 description: Mermaid diagram content to validate
+ *                 example: |
+ *                   graph TD
+ *                     A[Start] --> B[Process]
+ *                     B --> C[End]
+ *     responses:
+ *       200:
+ *         description: Mermaid linting completed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/LintResult'
+ *       400:
+ *         $ref: '#/components/responses/BadRequest'
+ *       500:
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 router.post('/mermaid', async (req, res) => {
   try {
     const { content } = req.body

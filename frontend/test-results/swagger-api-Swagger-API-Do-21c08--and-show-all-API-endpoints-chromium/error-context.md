@@ -1,0 +1,76 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - img
+  - generic [ref=e4]:
+    - generic:
+      - img
+    - generic [ref=e5]:
+      - generic [ref=e9]:
+        - heading "Mermaid & YANG Visualization API 1.0.0 OAS 3.0" [level=2] [ref=e11]:
+          - text: Mermaid & YANG Visualization API
+          - generic [ref=e12]:
+            - generic [ref=e14]: 1.0.0
+            - generic [ref=e16]: OAS 3.0
+        - paragraph [ref=e19]: API for managing Mermaid diagrams, Markdown files, YANG models, and linting functionality
+        - link "Contact API Support" [ref=e21] [cursor=pointer]:
+          - /url: mailto:support@example.com
+      - generic [ref=e25]:
+        - generic [ref=e26]: Servers
+        - combobox [ref=e29]:
+          - option "http://localhost:3000 - Development server" [selected]
+      - generic [ref=e32]:
+        - heading "Health API health check endpoints Expand operation" [level=3] [ref=e35] [cursor=pointer]:
+          - link "Health" [ref=e36] [cursor=pointer]:
+            - /url: "#/Health"
+            - generic [ref=e37] [cursor=pointer]: Health
+          - paragraph [ref=e40] [cursor=pointer]: API health check endpoints
+          - button "Expand operation" [ref=e41] [cursor=pointer]:
+            - img [ref=e42] [cursor=pointer]
+        - heading "Files File management operations Expand operation" [level=3] [ref=e46] [cursor=pointer]:
+          - link "Files" [ref=e47] [cursor=pointer]:
+            - /url: "#/Files"
+            - generic [ref=e48] [cursor=pointer]: Files
+          - paragraph [ref=e51] [cursor=pointer]: File management operations
+          - button "Expand operation" [ref=e52] [cursor=pointer]:
+            - img [ref=e53] [cursor=pointer]
+        - heading "Linting Markdown and Mermaid linting operations Expand operation" [level=3] [ref=e57] [cursor=pointer]:
+          - link "Linting" [ref=e58] [cursor=pointer]:
+            - /url: "#/Linting"
+            - generic [ref=e59] [cursor=pointer]: Linting
+          - paragraph [ref=e62] [cursor=pointer]: Markdown and Mermaid linting operations
+          - button "Expand operation" [ref=e63] [cursor=pointer]:
+            - img [ref=e64] [cursor=pointer]
+        - heading "YANG YANG model parsing and processing Expand operation" [level=3] [ref=e68] [cursor=pointer]:
+          - link "YANG" [ref=e69] [cursor=pointer]:
+            - /url: "#/YANG"
+            - generic [ref=e70] [cursor=pointer]: YANG
+          - paragraph [ref=e73] [cursor=pointer]: YANG model parsing and processing
+          - button "Expand operation" [ref=e74] [cursor=pointer]:
+            - img [ref=e75] [cursor=pointer]
+      - generic [ref=e79]:
+        - heading "Schemas" [level=4] [ref=e80] [cursor=pointer]:
+          - button "Schemas" [expanded] [ref=e81] [cursor=pointer]:
+            - generic [ref=e82] [cursor=pointer]: Schemas
+            - img [ref=e83] [cursor=pointer]
+        - generic [ref=e85]:
+          - button "File" [ref=e88] [cursor=pointer]:
+            - generic [ref=e91] [cursor=pointer]: File
+          - button "Diagram" [ref=e95] [cursor=pointer]:
+            - generic [ref=e98] [cursor=pointer]: Diagram
+          - button "LintResult" [ref=e102] [cursor=pointer]:
+            - generic [ref=e105] [cursor=pointer]: LintResult
+          - button "LintIssue" [ref=e109] [cursor=pointer]:
+            - generic [ref=e112] [cursor=pointer]: LintIssue
+          - button "YangParseResult" [ref=e116] [cursor=pointer]:
+            - generic [ref=e119] [cursor=pointer]: YangParseResult
+          - button "YangModule" [ref=e123] [cursor=pointer]:
+            - generic [ref=e126] [cursor=pointer]: YangModule
+          - button "YangNode" [ref=e130] [cursor=pointer]:
+            - generic [ref=e133] [cursor=pointer]: YangNode
+          - button "YangMetadata" [ref=e137] [cursor=pointer]:
+            - generic [ref=e140] [cursor=pointer]: YangMetadata
+          - button "Error" [ref=e144] [cursor=pointer]:
+            - generic [ref=e147] [cursor=pointer]: Error
+```

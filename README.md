@@ -46,6 +46,68 @@ Export your Markdown documents with embedded Mermaid diagrams to standalone HTML
 - **Improved Close Button**: Smart navigation handling for different browser contexts
 - **Fixed Export Functionality**: Reliable PNG/SVG export with proper state management
 
+## Release Notes
+
+### Version 2.1.0 (2024-09-18)
+
+🚀 **New Features**
+- Document View Tab with inline diagram rendering and multi-theme support
+- Multi-architecture Docker support (ARM64 + AMD64) with automated build scripts
+- HTML Export System with 3 CSS theme options (Tailwind, GitHub, Custom)
+- Interactive diagram controls with zoom, pan, and export functionality
+- Version management system with automated incrementing and release note generation
+- Documentation QA agent with comprehensive quality checking
+
+🐛 **Bug Fixes**
+- Fixed Safari compatibility issues with export functionality
+- Resolved close button behavior in fullscreen diagram view
+- Enhanced PNG/SVG export reliability with improved state management
+- Fixed theme control visibility issues in Document View
+
+📚 **Documentation**
+- Complete API documentation update with endpoint specifications
+- Enhanced troubleshooting guides with specific error scenarios
+- Added comprehensive development workflow documentation
+- Created automated documentation quality assurance system
+
+🔧 **Technical Improvements**
+- Implemented semantic versioning with git tag automation
+- Enhanced error handling system with structured reporting
+- Improved notification system integration across components
+- Added comprehensive test coverage for v2.1 features
+
+### Version 2.0.1 (2024-09-15)
+
+🐛 **Bug Fixes**
+- Fixed Docker build issues on ARM64 systems
+- Resolved file upload size limitations
+- Enhanced YANG parser error reporting
+
+### Version 2.0.0 (2024-09-10)
+
+🚀 **New Features**
+- Initial YANG Model Explorer implementation
+- Multi-file upload support with drag-and-drop
+- Enhanced Mermaid diagram viewer with fullscreen mode
+- Premium dark theme UI with smooth animations
+
+⚠️ **Breaking Changes**
+- Migrated from Vue.js to React framework
+- Updated API endpoints structure
+- Changed Docker configuration for ARM64 optimization
+
+### Version 1.0.0 (2024-09-01)
+
+🎉 **Initial Release**
+- Basic Mermaid diagram rendering
+- File upload and management
+- Docker containerization
+- Local web server implementation
+
+---
+
+**[View All Releases](docs/releases/)** | **[Version History](version-history.json)**
+
 ## Quick Start
 
 ### Prerequisites
