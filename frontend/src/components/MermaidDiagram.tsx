@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react'
-import { renderMermaidDiagram, validateMermaidSyntax } from '../utils/mermaid'
+import { renderMermaidDiagram, validateMermaidSyntax, setMermaidThemeByName } from '../utils/mermaid'
 import { ZoomIn, ZoomOut, RotateCcw, Maximize2, Download, AlertCircle } from 'lucide-react'
+import ThemeToggle from './ThemeToggle'
+import { loadThemePreference, saveThemePreference, getTheme } from '../themes/mermaidThemes'
 
 interface MermaidDiagramProps {
   definition: string
@@ -24,6 +26,7 @@ const MermaidDiagram: React.FC<MermaidDiagramProps> = ({
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [showExportMenu, setShowExportMenu] = useState(false)
+  const [currentTheme, setCurrentTheme] = useState(() => loadThemePreference())
 
   const renderDiagram = useCallback(async () => {
     if (!definition.trim()) {
@@ -36,6 +39,10 @@ const MermaidDiagram: React.FC<MermaidDiagramProps> = ({
     setError(null)
 
     try {
+      // Apply theme before rendering
+      const theme = getTheme(currentTheme)
+      setMermaidThemeByName(theme.mermaidTheme)
+
       // Validate syntax first
       const validation = await validateMermaidSyntax(definition)
       if (!validation.isValid) {
@@ -69,7 +76,13 @@ const MermaidDiagram: React.FC<MermaidDiagramProps> = ({
     } finally {
       setIsLoading(false)
     }
-  }, [definition, onError])
+  }, [definition, onError, currentTheme])
+
+  // Handle theme change
+  const handleThemeChange = useCallback((themeName: string) => {
+    setCurrentTheme(themeName)
+    saveThemePreference(themeName)
+  }, [])
 
   useEffect(() => {
     renderDiagram()
@@ -198,10 +211,22 @@ const MermaidDiagram: React.FC<MermaidDiagramProps> = ({
     )
   }
 
+  const theme = getTheme(currentTheme)
+
   return (
-    <div className={`relative h-full ${className} ${isFullscreen ? 'fixed inset-0 z-50 bg-white dark:bg-gray-900' : ''}`}>
+    <div
+      className={`relative h-full ${className} ${isFullscreen ? 'fixed inset-0 z-50' : ''}`}
+      style={{ backgroundColor: theme.backgroundColor }}
+    >
       {/* Controls */}
       <div className="absolute top-4 right-4 z-10 flex space-x-2">
+        {/* Theme Toggle */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 px-3 py-2">
+          <ThemeToggle
+            currentTheme={currentTheme}
+            onThemeChange={handleThemeChange}
+          />
+        </div>
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-1">
           <button
             onClick={handleZoomIn}

@@ -97,6 +97,29 @@ export const setMermaidTheme = (isDark: boolean) => {
   })
 }
 
+// Set theme by name (for theme toggle feature)
+export const setMermaidThemeByName = (themeName: 'default' | 'dark' | 'forest' | 'neutral' | 'base') => {
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: themeName,
+    fontFamily: 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif',
+    fontSize: '16px',
+    flowchart: {
+      useMaxWidth: false,
+      htmlLabels: true,
+      curve: 'basis'
+    },
+    sequence: {
+      useMaxWidth: false,
+      wrap: true
+    },
+    gantt: {
+      useMaxWidth: false,
+      fontSize: 12
+    }
+  })
+}
+
 // Render Mermaid diagram
 export const renderMermaidDiagram = async (
   definition: string,

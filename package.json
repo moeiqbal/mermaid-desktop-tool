@@ -10,6 +10,10 @@
     "start": "cd backend && npm start",
     "test": "cd frontend && npm test",
     "test:e2e": "cd frontend && npm run test:e2e",
+    "test:qa": "cd frontend && npm run test:e2e -- tests/qa/",
+    "qa": "node scripts/qa-agent.js",
+    "qa:verbose": "node scripts/qa-agent.js --verbose",
+    "qa:coverage": "node scripts/qa-agent.js --coverage",
     "lint": "cd frontend && npm run lint",
     "typecheck": "cd frontend && npm run typecheck"
   },
