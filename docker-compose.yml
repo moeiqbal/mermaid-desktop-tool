@@ -1,37 +1,36 @@
 version: '3.8'
 
 services:
-  mermaid-yang-app:
+  # Production service - optimized build with no hot-reloading
+  app:
     build:
       context: .
       dockerfile: docker/Dockerfile
-      platforms:
-        - linux/amd64
-        - linux/arm64
+    image: mermaid-yang-app:latest
+    container_name: mermaid-yang-app
     ports:
       - "3000:3000"
     volumes:
-      # Mount source for development hot-reloading
-      - ./frontend:/app/frontend
-      - ./backend:/app/backend
+      # Only mount uploads directory for persistent storage
       - ./uploads:/app/uploads
-      # Exclude node_modules from volume mounts
-      - /app/frontend/node_modules
-      - /app/backend/node_modules
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=production
       - PORT=3000
     restart: unless-stopped
-    # platform will be automatically detected
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   # Development service with hot-reloading
   dev:
     build:
       context: .
       dockerfile: docker/Dockerfile.dev
-      platforms:
-        - linux/amd64
-        - linux/arm64
+    image: mermaid-yang-app:dev
+    container_name: mermaid-yang-app-dev
     ports:
       - "3000:3000"
       - "5173:5173" # Vite dev server
@@ -45,5 +44,4 @@ services:
       - NODE_ENV=development
       - PORT=3000
       - VITE_PORT=5173
-    command: npm run dev
-    # platform will be automatically detected
+    restart: unless-stopped

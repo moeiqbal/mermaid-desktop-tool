@@ -19,6 +19,7 @@
     "markdownlint": "^0.36.1",
     "mermaid": "^11.4.1",
     "multer": "^2.0.2",
+    "supertest": "^7.1.4",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "yang-js": "^0.24.70"

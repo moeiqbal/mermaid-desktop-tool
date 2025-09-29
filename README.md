@@ -135,32 +135,81 @@ Export your Markdown documents with embedded Mermaid diagrams to standalone HTML
 ## Quick Start
 
 ### Prerequisites
-- Docker installed on your system
-- ARM-based Mac (Apple Silicon) or compatible ARM64 system
+- **Docker** (v20.10 or later) - [Install Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- **Docker Compose** (v2.0 or later) - Included with Docker Desktop
+- **Supported Systems**:
+  - ARM-based Mac (Apple Silicon M1/M2/M3)
+  - AMD64/x86_64 systems (Intel/AMD processors)
+  - Linux ARM64 and AMD64
 
-### Run the Application
+### Production Mode (Recommended)
+
+The simplest way to run the application in production mode:
 
 ```bash
-# Clone or navigate to the project directory
+# 1. Navigate to the project directory
 cd mermaid-desktop-tool
 
-# Build and run in production mode
-docker build -t mermaid-yang-app -f docker/Dockerfile .
-docker run -p 3000:3000 -v $(pwd)/uploads:/app/uploads mermaid-yang-app
+# 2. Build and start the application
+docker-compose up -d app
+
+# 3. Verify the application is running
+docker ps
 ```
 
-Open your browser to [http://localhost:3000](http://localhost:3000)
+**Access the application:**
+- 🌐 Main Application: [http://localhost:3000](http://localhost:3000)
+- 📝 API Documentation: [http://localhost:3000/api/docs](http://localhost:3000/api/docs)
+- 🩺 Health Check: [http://localhost:3000/api/health](http://localhost:3000/api/health)
 
-### Development Mode
+**Stop the application:**
+```bash
+docker-compose down
+```
+
+### Alternative: Direct Docker Commands
+
+If you prefer not to use docker-compose:
 
 ```bash
-# Run with hot-reloading for development
-docker-compose up dev --build
+# Build the production image
+docker build -t mermaid-yang-app:latest -f docker/Dockerfile .
+
+# Run the container
+docker run -d \
+  --name mermaid-yang-app \
+  -p 3000:3000 \
+  -v $(pwd)/uploads:/app/uploads \
+  --restart unless-stopped \
+  mermaid-yang-app:latest
+
+# View logs
+docker logs -f mermaid-yang-app
+
+# Stop the container
+docker stop mermaid-yang-app
+docker rm mermaid-yang-app
 ```
 
-This will start:
-- Backend API server on port 3000
-- Frontend dev server on port 5173 (with hot-reloading)
+### Development Mode (Hot-Reloading)
+
+For active development with automatic code reloading:
+
+```bash
+# Start development environment
+docker-compose up dev --build
+
+# Or run in detached mode
+docker-compose up -d dev
+
+# View logs
+docker-compose logs -f dev
+```
+
+**Development access points:**
+- Backend API: [http://localhost:3000](http://localhost:3000)
+- Frontend Dev Server: [http://localhost:5173](http://localhost:5173)
+- API Documentation: [http://localhost:3000/api/docs](http://localhost:3000/api/docs)
 
 ## Architecture
 
@@ -293,36 +342,128 @@ docker run -d \
 
 ### Common Issues
 
-1. **Port Already in Use**
-   ```bash
-   # Change the port in docker-compose.yml or kill existing processes
-   lsof -ti:3000 | xargs kill
-   ```
+#### 1. Docker Container Won't Start
 
-2. **File Upload Issues**
-   - Check file size (max 10MB)
-   - Verify file extensions are supported
-   - Ensure `uploads/` directory has write permissions
+**Problem:** Container fails to start or exits immediately
+```bash
+# Check container logs
+docker logs mermaid-yang-app
 
-3. **ARM Architecture Issues**
-   ```bash
-   # Force ARM64 platform
-   docker build --platform linux/arm64 -t mermaid-yang-app .
-   ```
+# Check container status
+docker ps -a
 
-4. **Hot-Reload Not Working**
-   - Ensure volume mounts are correct in `docker-compose.yml`
-   - Check that both frontend and backend are running in dev mode
+# Restart the container
+docker-compose restart app
+```
 
-5. **HTML Export Issues**
-   - Ensure browser allows file downloads
-   - Check console for JavaScript errors
-   - Verify Mermaid diagrams are valid before export
+#### 2. Port Already in Use
 
-6. **YANG Parsing Errors**
-   - Check YANG syntax using the error panel
-   - Verify file encoding (UTF-8 recommended)
-   - Review error details for specific line numbers and suggestions
+**Problem:** Error: "port 3000 is already in use"
+```bash
+# Find and kill the process using port 3000
+lsof -ti:3000 | xargs kill -9
+
+# Or change the port in docker-compose.yml
+# ports:
+#   - "3001:3000"  # Use port 3001 instead
+```
+
+#### 3. Application Shows White Screen
+
+**Problem:** Browser shows blank/white screen
+
+**Solutions:**
+- Clear browser cache and hard refresh (Cmd+Shift+R or Ctrl+Shift+R)
+- Check browser console for errors (F12)
+- Verify container is running: `docker ps`
+- Check container logs: `docker logs mermaid-yang-app`
+- For Safari users: The app shows a compatibility warning (expected behavior)
+
+#### 4. Clean Docker Installation
+
+**Problem:** Issues with cached images or volumes
+```bash
+# Stop all containers
+docker-compose down
+
+# Remove all images and cache
+docker system prune -af --volumes
+
+# Rebuild from scratch
+docker-compose build --no-cache app
+docker-compose up -d app
+```
+
+#### 5. File Upload Issues
+
+**Problem:** Cannot upload files or files disappear
+- Maximum file size: 10MB per file
+- Supported extensions: `.md`, `.mmd`, `.mermaid`, `.yang`
+- Ensure `uploads/` directory exists and has write permissions
+- Check container volume mount: `docker inspect mermaid-yang-app`
+
+#### 6. API Endpoints Not Responding
+
+**Problem:** API calls fail or return errors
+```bash
+# Test the health endpoint
+curl http://localhost:3000/api/health
+
+# Check if the container is healthy
+docker inspect mermaid-yang-app --format='{{.State.Health.Status}}'
+
+# View real-time logs
+docker logs -f mermaid-yang-app
+```
+
+#### 7. Multi-Architecture Build Issues
+
+**Problem:** Build fails on different architectures
+```bash
+# Check available platforms
+docker buildx ls
+
+# Create multi-arch builder (one-time setup)
+docker buildx create --name multiarch-builder --use
+docker buildx inspect --bootstrap
+
+# Build for specific architecture
+docker buildx build --platform linux/arm64 -t mermaid-yang-app:arm64 -f docker/Dockerfile --load .
+docker buildx build --platform linux/amd64 -t mermaid-yang-app:amd64 -f docker/Dockerfile --load .
+```
+
+#### 8. Hot-Reload Not Working (Development Mode)
+
+**Problem:** Code changes don't trigger automatic reload
+- Verify volume mounts in `docker-compose.yml` are correct
+- Check that you're using the `dev` service: `docker-compose up dev`
+- Ensure both frontend and backend containers are running
+- Review logs: `docker-compose logs -f dev`
+
+#### 9. HTML Export Issues
+
+**Problem:** Export to HTML fails or generates invalid files
+- Ensure browser allows file downloads
+- Check browser console (F12) for JavaScript errors
+- Verify Mermaid diagrams are valid before export
+- Test with a simple diagram first
+
+#### 10. YANG Parsing Errors
+
+**Problem:** YANG files fail to parse or show errors
+- Check YANG syntax using the built-in error panel
+- Verify file encoding is UTF-8
+- Review error details for specific line numbers and suggestions
+- Test with a simple YANG file first
+- Ensure all imported modules are uploaded together
+
+### Getting Help
+
+If issues persist:
+1. Check the Docker logs: `docker-compose logs app`
+2. Verify system requirements are met
+3. Ensure Docker and Docker Compose are up to date
+4. Test with a fresh installation using the clean Docker installation steps above
 
 ## License
 

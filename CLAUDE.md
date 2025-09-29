@@ -6,7 +6,95 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Building and Running
 
-#### Multi-Architecture Builds (Recommended)
+#### Production Deployment (Recommended - Docker Compose)
+```bash
+# Build and start production container
+docker-compose up -d app
+
+# View logs
+docker-compose logs -f app
+
+# Stop the application
+docker-compose down
+
+# Restart the application
+docker-compose restart app
+
+# Access points:
+# - Production app: http://localhost:3000
+# - Backend API: http://localhost:3000/api/
+# - Swagger docs: http://localhost:3000/api/docs
+# - Health check: http://localhost:3000/api/health
+
+# Check container health
+docker inspect mermaid-yang-app --format='{{.State.Health.Status}}'
+```
+
+#### Production Deployment (Direct Docker Commands)
+```bash
+# Build production image
+docker build -t mermaid-yang-app:latest -f docker/Dockerfile .
+
+# Run production container
+docker run -d \
+  --name mermaid-yang-app \
+  -p 3000:3000 \
+  -v $(pwd)/uploads:/app/uploads \
+  --restart unless-stopped \
+  mermaid-yang-app:latest
+
+# View logs
+docker logs -f mermaid-yang-app
+
+# Stop and remove container
+docker stop mermaid-yang-app
+docker rm mermaid-yang-app
+```
+
+#### Development Mode (Hot-Reloading)
+```bash
+# Start development environment with hot-reload
+docker-compose up dev --build
+
+# Or run in detached mode
+docker-compose up -d dev
+
+# View logs
+docker-compose logs -f dev
+
+# Access points:
+# - Frontend dev server: http://localhost:5173 (hot-reload)
+# - Backend API: http://localhost:3000
+# - Swagger docs: http://localhost:3000/api/docs
+```
+
+#### Local Development (Without Docker)
+```bash
+# Frontend dev server with hot-reload
+cd frontend && npm run dev  # Port 5173
+
+# Backend dev server
+cd backend && npm run dev    # Port 3000
+
+# Production local build
+cd frontend && npm run build
+NODE_ENV=production node backend/src/server.js
+```
+
+#### Clean Docker Installation
+```bash
+# Stop all containers
+docker-compose down
+
+# Remove all Docker images and cache
+docker system prune -af --volumes
+
+# Rebuild from scratch
+docker-compose build --no-cache app
+docker-compose up -d app
+```
+
+#### Multi-Architecture Builds (Advanced)
 ```bash
 # Multi-architecture build for both ARM64 and AMD64
 ./scripts/build-multiarch.sh mermaid-yang-app:latest
@@ -18,47 +106,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # Direct buildx commands
 docker buildx build --platform linux/arm64 -t mermaid-yang-app:arm64 -f docker/Dockerfile --load .
 docker buildx build --platform linux/amd64 -t mermaid-yang-app:amd64 -f docker/Dockerfile --load .
-
-# Development build with auto-detection
-./scripts/build-dev.sh auto
-
-# Development build for specific architecture
-./scripts/build-dev.sh arm64  # or amd64
-```
-
-#### Production Deployment
-```bash
-# Clean production build
-cd frontend && npm run build
-cd ../backend && npm install
-
-# Start production server (port 3000)
-NODE_ENV=production node backend/src/server.js
-
-# Access points:
-# - Production app: http://localhost:3000
-# - Backend API: http://localhost:3000/api/
-# - Swagger docs: http://localhost:3000/api/docs
-# - Health check: http://localhost:3000/api/health
-```
-
-#### Development Mode
-```bash
-# Frontend dev server with hot-reload
-cd frontend && npm run dev  # Port 5173
-
-# Backend dev server
-cd backend && npm run dev    # Port 3000
-
-# Docker development
-docker-compose up dev --build
-```
-
-#### Legacy Single-Architecture Builds
-```bash
-# Production build and run (single container)
-docker build -t mermaid-yang-app -f docker/Dockerfile .
-docker run -p 3000:3000 -v $(pwd)/uploads:/app/uploads mermaid-yang-app
 ```
 
 #### Docker Buildx Setup (One-time)

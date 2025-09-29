@@ -28,8 +28,8 @@ FROM node:18-alpine AS runner
 ARG TARGETPLATFORM
 ARG BUILDPLATFORM
 
-# Install dumb-init for proper signal handling
-RUN apk add --no-cache dumb-init
+# Install dumb-init for proper signal handling and wget for healthchecks
+RUN apk add --no-cache dumb-init wget
 
 # Create app user
 RUN addgroup --system --gid 1001 nodejs
