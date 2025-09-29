@@ -1,0 +1,110 @@
+/**
+ * Theme Toggle Styling
+ * Provides smooth transitions and visual styling for theme switching
+ */
+
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.theme-toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+}
+
+.theme-icon {
+  font-size: 1rem;
+}
+
+.theme-label-text {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .theme-label-text {
+    display: inline;
+  }
+}
+
+.theme-select {
+  padding: 0.375rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  background-color: #ffffff;
+  color: #111827;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.theme-select:hover {
+  border-color: #9ca3af;
+  background-color: #f9fafb;
+}
+
+.theme-select:focus {
+  border-color: #3b82f6;
+  ring: 2px;
+  ring-color: #3b82f6;
+  ring-opacity: 0.5;
+}
+
+.theme-description {
+  display: none;
+  font-size: 0.75rem;
+  color: #6b7280;
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (min-width: 1024px) {
+  .theme-description {
+    display: inline;
+  }
+}
+
+/* Dark mode support */
+.dark .theme-toggle-label {
+  color: #d1d5db;
+}
+
+.dark .theme-select {
+  background-color: #1f2937;
+  color: #f9fafb;
+  border-color: #4b5563;
+}
+
+.dark .theme-select:hover {
+  background-color: #374151;
+  border-color: #6b7280;
+}
+
+.dark .theme-select:focus {
+  border-color: #60a5fa;
+  ring-color: #60a5fa;
+}
+
+.dark .theme-description {
+  color: #9ca3af;
+}
+
+/* Smooth theme transition for diagrams */
+[data-testid="theme-toggle"] {
+  transition: all 0.3s ease-in-out;
+}
+
+/* Container background transition */
+.mermaid-diagram-container {
+  transition: background-color 0.3s ease-in-out;
+}
