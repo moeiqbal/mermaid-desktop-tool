@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Header from './components/Header'
 import MermaidViewer from './views/MermaidViewer'
+import MermaidEditorView from './views/MermaidEditorView'
 import DocumentView from './views/DocumentView'
 import YangExplorer from './views/YangExplorer'
 import FullScreenDiagram from './components/FullScreenDiagram'
@@ -14,7 +15,7 @@ function App() {
     const savedTheme = localStorage.getItem('theme')
     return savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)
   })
-  const [currentView, setCurrentView] = useState<'mermaid' | 'document' | 'yang'>('mermaid')
+  const [currentView, setCurrentView] = useState<'mermaid' | 'editor' | 'document' | 'yang'>('mermaid')
 
   // Apply theme on mount and changes
   useEffect(() => {
@@ -61,6 +62,7 @@ function App() {
                       element={
                         <div className="fade-in">
                           {currentView === 'mermaid' ? <MermaidViewer /> :
+                           currentView === 'editor' ? <MermaidEditorView /> :
                            currentView === 'document' ? <DocumentView /> :
                            <YangExplorer />}
                         </div>
@@ -71,6 +73,14 @@ function App() {
                       element={
                         <div className="fade-in">
                           <MermaidViewer />
+                        </div>
+                      }
+                    />
+                    <Route
+                      path="/editor"
+                      element={
+                        <div className="fade-in">
+                          <MermaidEditorView />
                         </div>
                       }
                     />

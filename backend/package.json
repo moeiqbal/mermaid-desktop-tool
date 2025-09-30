@@ -1,6 +1,6 @@
 {
   "name": "mermaid-yang-backend",
-  "version": "1.0.0",
+  "version": "2.5.0",
   "description": "Backend server for Mermaid & YANG visualization tool",
   "type": "module",
   "main": "src/server.js",

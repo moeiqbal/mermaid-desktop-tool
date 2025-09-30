@@ -1,7 +1,7 @@
 {
   "name": "mermaid-yang-frontend",
   "private": true,
-  "version": "0.0.0",
+  "version": "2.5.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -17,6 +17,9 @@
     "test:report": "playwright show-report"
   },
   "dependencies": {
+    "@codemirror/lang-javascript": "^6.2.4",
+    "@codemirror/view": "^6.38.4",
+    "@uiw/react-codemirror": "^4.25.2",
     "axios": "^1.7.9",
     "clsx": "^2.1.1",
     "lucide-react": "^0.468.0",
