@@ -1,20 +1,21 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react'
 import { ZoomIn, ZoomOut, Download, Maximize2, ExternalLink, Move, RotateCcw } from 'lucide-react'
-import { renderMermaidDiagram } from '../utils/mermaid'
+import { renderMermaidDiagram, setMermaidThemeByName } from '../utils/mermaid'
 import { DocumentDiagram } from '../utils/documentParser'
+import { getTheme } from '../themes/mermaidThemes'
 
 interface InlineDiagramProps {
   diagram: DocumentDiagram
   onOpenInMermaidViewer?: (diagramId: string) => void
   onOpenFullscreen?: (diagramId: string) => void
-  theme?: 'light' | 'dark' // Currently unused but ready for future theme integration
+  mermaidTheme?: string // Mermaid theme name from mermaidThemes.ts
 }
 
 const InlineDiagram: React.FC<InlineDiagramProps> = ({
   diagram,
   onOpenInMermaidViewer,
   onOpenFullscreen,
-  theme = 'light'
+  mermaidTheme = 'light'
 }) => {
   const containerRef = useRef<HTMLDivElement>(null)
   const [svgContent, setSvgContent] = useState<string>('')
@@ -37,6 +38,10 @@ const InlineDiagram: React.FC<InlineDiagramProps> = ({
     setError(null)
 
     try {
+      // Apply theme before rendering
+      const theme = getTheme(mermaidTheme)
+      setMermaidThemeByName(theme.mermaidTheme)
+
       const result = await renderMermaidDiagram(diagram.content, diagram.id)
       setSvgContent(result.svg)
     } catch (err) {
@@ -45,7 +50,7 @@ const InlineDiagram: React.FC<InlineDiagramProps> = ({
     } finally {
       setIsLoading(false)
     }
-  }, [diagram.content, diagram.id])
+  }, [diagram.content, diagram.id, mermaidTheme])
 
   useEffect(() => {
     renderDiagram()

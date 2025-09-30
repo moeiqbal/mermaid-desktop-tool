@@ -7,6 +7,8 @@ import { useToast } from '../components/NotificationSystem'
 import { parseDocumentContent, DocumentContent, getDocumentCSS } from '../utils/documentParser'
 import { CSSStyleOption, getStyleOptions } from '../utils/htmlExport'
 import { initMermaid } from '../utils/mermaid'
+import ThemeToggle from '../components/ThemeToggle'
+import { loadThemePreference, saveThemePreference } from '../themes/mermaidThemes'
 
 interface FileItem {
   id: string
@@ -31,6 +33,7 @@ const DocumentView: React.FC = () => {
     const savedTheme = localStorage.getItem('document-view-dark-mode')
     return savedTheme ? JSON.parse(savedTheme) : false
   })
+  const [mermaidTheme, setMermaidTheme] = useState(() => loadThemePreference())
   const contentRef = useRef<HTMLDivElement>(null)
   const toast = useToast()
 
@@ -152,6 +155,11 @@ const DocumentView: React.FC = () => {
     // This would open the diagram in fullscreen mode
     toast.info('Coming Soon', 'Fullscreen diagram view will be implemented soon.')
   }
+
+  const handleMermaidThemeChange = useCallback((themeName: string) => {
+    setMermaidTheme(themeName)
+    saveThemePreference(themeName)
+  }, [])
 
   const filteredFiles = files.filter(file =>
     file.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -307,14 +315,14 @@ const DocumentView: React.FC = () => {
             {/* Theme Controls in Header */}
             {selectedFile && (
               <div className="flex items-center gap-4">
-                {/* Theme Selector */}
+                {/* Document Theme Selector */}
                 <div className="flex items-center gap-2">
                   <Palette className="w-4 h-4 text-gray-500" />
-                  <label className="text-sm text-gray-600 dark:text-gray-400">Theme:</label>
+                  <label className="text-sm text-gray-600 dark:text-gray-400">Doc Theme:</label>
                   <select
                     value={selectedTheme}
                     onChange={(e) => setSelectedTheme(e.target.value as CSSStyleOption)}
-                    className="text-sm border border-gray-300 dark:border-gray-600 rounded-md px-3 py-1 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="text-sm border border-gray-300 dark:border-gray-600 rounded-md px-2 py-1 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
                     {getStyleOptions().map((option) => (
                       <option key={option.id} value={option.id}>
@@ -323,6 +331,15 @@ const DocumentView: React.FC = () => {
                     ))}
                   </select>
                 </div>
+
+                {/* Mermaid Theme Selector */}
+                {documentContent && documentContent.diagrams.length > 0 && (
+                  <ThemeToggle
+                    currentTheme={mermaidTheme}
+                    onThemeChange={handleMermaidThemeChange}
+                    className="flex items-center gap-2"
+                  />
+                )}
 
                 {/* Dark Mode Toggle */}
                 <div className="flex items-center gap-2">
@@ -367,7 +384,7 @@ const DocumentView: React.FC = () => {
               </div>
             </div>
           ) : documentContent ? (
-            <div className="p-8">
+            <div className="p-8 w-full overflow-hidden">
               <style dangerouslySetInnerHTML={{ __html: getDocumentCSS(selectedTheme, darkMode) }} />
 
               <div className="document-content" ref={contentRef}>
@@ -392,7 +409,7 @@ const DocumentView: React.FC = () => {
                           diagram={diagram}
                           onOpenInMermaidViewer={handleOpenInMermaidViewer}
                           onOpenFullscreen={handleOpenFullscreen}
-                          theme={darkMode ? 'dark' : 'light'}
+                          mermaidTheme={mermaidTheme}
                         />
                       ))}
                     </React.Fragment>
@@ -411,7 +428,7 @@ const DocumentView: React.FC = () => {
                       diagram={diagram}
                       onOpenInMermaidViewer={handleOpenInMermaidViewer}
                       onOpenFullscreen={handleOpenFullscreen}
-                      theme={darkMode ? 'dark' : 'light'}
+                      mermaidTheme={mermaidTheme}
                     />
                   ))}
               </div>

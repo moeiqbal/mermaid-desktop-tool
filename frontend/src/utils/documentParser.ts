@@ -303,8 +303,18 @@ export function getDocumentCSS(theme: 'tailwind' | 'github' | 'custom', darkMode
         width: 100%;
         margin: 0;
         font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        overflow-x: auto;
-        word-wrap: break-word;
+        overflow-x: hidden !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+        word-break: break-all !important;
+        hyphens: auto !important;
+      }
+
+      .document-content * {
+        max-width: 100% !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+        word-break: break-word !important;
       }
 
       .document-content h1 {
@@ -345,6 +355,9 @@ export function getDocumentCSS(theme: 'tailwind' | 'github' | 'custom', darkMode
         margin: 1rem 0;
         line-height: 1.7;
         color: ${darkMode ? '#e2e8f0' : '#374151'};
+        max-width: 100%;
+        overflow-wrap: break-word;
+        word-break: break-word;
       }
 
       .document-content ul,
@@ -384,6 +397,13 @@ export function getDocumentCSS(theme: 'tailwind' | 'github' | 'custom', darkMode
         overflow-x: auto;
         border: 1px solid ${darkMode ? '#334155' : '#e5e7eb'};
         margin: 1.5rem 0;
+        max-width: 100%;
+      }
+
+      .document-content pre code {
+        word-break: normal;
+        white-space: pre;
+        overflow-wrap: normal;
       }
 
       .document-content a {
@@ -404,8 +424,18 @@ export function getDocumentCSS(theme: 'tailwind' | 'github' | 'custom', darkMode
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
         line-height: 1.6;
         color: #24292f;
-        overflow-x: auto;
-        word-wrap: break-word;
+        overflow-x: hidden !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+        word-break: break-all !important;
+        hyphens: auto !important;
+      }
+
+      .document-content * {
+        max-width: 100% !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+        word-break: break-word !important;
       }
 
       .document-content h1,
@@ -429,6 +459,9 @@ export function getDocumentCSS(theme: 'tailwind' | 'github' | 'custom', darkMode
       .document-content p {
         margin-top: 0;
         margin-bottom: 16px;
+        max-width: 100%;
+        overflow-wrap: break-word;
+        word-break: break-word;
       }
 
       .document-content blockquote {
@@ -457,6 +490,13 @@ export function getDocumentCSS(theme: 'tailwind' | 'github' | 'custom', darkMode
         padding: 16px;
         overflow: auto;
         border: 1px solid #d1d9e0;
+        max-width: 100%;
+      }
+
+      .document-content pre code {
+        word-break: normal;
+        white-space: pre;
+        overflow-wrap: normal;
       }
 
       .document-content code {
@@ -474,8 +514,18 @@ export function getDocumentCSS(theme: 'tailwind' | 'github' | 'custom', darkMode
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         line-height: 1.7;
         color: ${darkMode ? '#f1f5f9' : '#1f2937'};
-        overflow-x: auto;
-        word-wrap: break-word;
+        overflow-x: hidden !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+        word-break: break-all !important;
+        hyphens: auto !important;
+      }
+
+      .document-content * {
+        max-width: 100% !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+        word-break: break-word !important;
       }
 
       .document-content h1 {
@@ -515,6 +565,9 @@ export function getDocumentCSS(theme: 'tailwind' | 'github' | 'custom', darkMode
       .document-content p {
         margin-bottom: 1.5rem;
         color: ${darkMode ? '#e2e8f0' : '#374151'};
+        max-width: 100%;
+        overflow-wrap: break-word;
+        word-break: break-word;
       }
 
       .document-content blockquote {
@@ -541,6 +594,13 @@ export function getDocumentCSS(theme: 'tailwind' | 'github' | 'custom', darkMode
         overflow-x: auto;
         border: 1px solid ${darkMode ? '#334155' : '#e5e7eb'};
         margin: 1.5rem 0;
+        max-width: 100%;
+      }
+
+      .document-content pre code {
+        word-break: normal;
+        white-space: pre;
+        overflow-wrap: normal;
       }
 
       .document-content ul,
