@@ -4,303 +4,133 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Essential Commands
 
-### Building and Running
-
-#### Production Deployment (Recommended - Docker Compose)
+### Docker Deployment (Recommended)
 ```bash
-# Build and start production container
-docker-compose up -d app
+# Production
+docker-compose up -d app          # Start production container
+docker-compose logs -f app         # View logs
+docker-compose down                # Stop all containers
+docker-compose restart app         # Restart application
 
-# View logs
-docker-compose logs -f app
+# Development with hot-reload
+docker-compose up -d dev           # Start dev environment
+docker-compose logs -f dev         # View dev logs
 
-# Stop the application
+# Clean rebuild
 docker-compose down
-
-# Restart the application
-docker-compose restart app
-
-# Access points:
-# - Production app: http://localhost:3000
-# - Backend API: http://localhost:3000/api/
-# - Swagger docs: http://localhost:3000/api/docs
-# - Health check: http://localhost:3000/api/health
-
-# Check container health
-docker inspect mermaid-yang-app --format='{{.State.Health.Status}}'
-```
-
-#### Production Deployment (Direct Docker Commands)
-```bash
-# Build production image
-docker build -t mermaid-yang-app:latest -f docker/Dockerfile .
-
-# Run production container
-docker run -d \
-  --name mermaid-yang-app \
-  -p 3000:3000 \
-  -v $(pwd)/uploads:/app/uploads \
-  --restart unless-stopped \
-  mermaid-yang-app:latest
-
-# View logs
-docker logs -f mermaid-yang-app
-
-# Stop and remove container
-docker stop mermaid-yang-app
-docker rm mermaid-yang-app
-```
-
-#### Development Mode (Hot-Reloading)
-```bash
-# Start development environment with hot-reload
-docker-compose up dev --build
-
-# Or run in detached mode
-docker-compose up -d dev
-
-# View logs
-docker-compose logs -f dev
-
-# Access points:
-# - Frontend dev server: http://localhost:5173 (hot-reload)
-# - Backend API: http://localhost:3000
-# - Swagger docs: http://localhost:3000/api/docs
-```
-
-#### Local Development (Without Docker)
-```bash
-# Frontend dev server with hot-reload
-cd frontend && npm run dev  # Port 5173
-
-# Backend dev server
-cd backend && npm run dev    # Port 3000
-
-# Production local build
-cd frontend && npm run build
-NODE_ENV=production node backend/src/server.js
-```
-
-#### Clean Docker Installation
-```bash
-# Stop all containers
-docker-compose down
-
-# Remove all Docker images and cache
 docker system prune -af --volumes
-
-# Rebuild from scratch
 docker-compose build --no-cache app
 docker-compose up -d app
 ```
 
-#### Multi-Architecture Builds (Advanced)
+### Local Development
 ```bash
-# Multi-architecture build for both ARM64 and AMD64
-./scripts/build-multiarch.sh mermaid-yang-app:latest
-
-# Build for specific architecture (loadable locally)
-./scripts/build-single-arch.sh arm64 mermaid-yang-app:arm64
-./scripts/build-single-arch.sh amd64 mermaid-yang-app:amd64
-
-# Direct buildx commands
-docker buildx build --platform linux/arm64 -t mermaid-yang-app:arm64 -f docker/Dockerfile --load .
-docker buildx build --platform linux/amd64 -t mermaid-yang-app:amd64 -f docker/Dockerfile --load .
-```
-
-#### Docker Buildx Setup (One-time)
-If multi-arch builds fail, ensure buildx is properly configured:
-```bash
-# Create and use multi-arch builder
-docker buildx create --name multiarch-builder --use
-docker buildx inspect --bootstrap
-```
-
-### Development Commands
-```bash
-# Frontend only
+# Frontend (port 5173)
 cd frontend
-npm run dev        # Vite dev server on port 5173
-npm run build      # Production build
-npm run lint       # ESLint v9 with TypeScript
-npm run test       # Playwright tests
-npm run test:ui    # Playwright UI mode
+npm install                        # Install dependencies
+npm run dev                        # Start Vite dev server
+npm run build                      # Production build
+npm run lint                       # Run ESLint
+npm run typecheck                  # TypeScript checking
+npm run test                       # Run Playwright tests
+npm run test:ui                    # Playwright UI mode
 
-# Backend only
+# Backend (port 3000)
 cd backend
-npm run dev        # Nodemon for auto-restart
-npm start          # Production start
+npm install                        # Install dependencies
+npm run dev                        # Start with nodemon
+npm start                          # Production mode
+NODE_ENV=production node src/server.js  # Direct production start
 
-# Testing
+# Run specific Playwright test
 cd frontend
-npm run test                    # Run all Playwright tests
-npm run test -- smoke-test     # Run specific test file
-npm run test:report            # View test reports
+npx playwright test tests/specific-test.spec.ts --headed
 ```
-
-### Linting and Type Checking
-```bash
-cd frontend
-npm run lint           # ESLint (v9 config in eslint.config.js)
-npm run typecheck      # TypeScript checking (run this before commits)
-```
-
-## Recent Feature Additions (v2.1)
-
-### HTML Export System
-- `frontend/src/utils/htmlExport.ts` - Core HTML generation with 3 CSS themes
-- `frontend/src/components/HtmlExportModal.tsx` - Export configuration modal
-- Supports Tailwind, GitHub, and Custom CSS styling options
-- Generates standalone HTML files with embedded interactive Mermaid diagrams
-
-### Enhanced Error Handling
-- `frontend/src/components/YangErrorPanel.tsx` - Comprehensive error display component
-- Structured error reporting with line numbers, severity levels, and troubleshooting tips
-- Copy-to-clipboard functionality and expandable/collapsible interface
-- Enhanced YANG parser error handling with fallback strategies
-
-### UI/UX Improvements
-- Fixed close button behavior in `FullScreenDiagram.tsx` with smart navigation
-- Improved PNG/SVG export reliability in `MermaidDiagram.tsx` with React state management
-- Enhanced notification system integration for user feedback
-
-## Recent Updates (v2.2) - Safari Compatibility System
-
-### Production Safari Compatibility Fix
-**Problem**: Safari browsers showed white screens with SSL/connection errors instead of the React application, preventing the BrowserCompatibilityCheck component from loading.
-
-**Solution**: Implemented server-side Safari detection and direct HTML response system:
-
-#### Server-side Browser Detection (`backend/src/server.js`)
-```javascript
-// Safari compatibility middleware - serves compatibility page before React app loads
-app.use((req, res, next) => {
-  const userAgent = req.get('User-Agent') || ''
-
-  // Detect Safari (but not Chrome-based browsers)
-  const isSafariRegex = /^((?!chrome|android).)*safari/i.test(userAgent)
-  const isMobileSafari = /iphone|ipad|ipod/.test(userAgent.toLowerCase()) &&
-                        /safari/.test(userAgent.toLowerCase()) &&
-                        !/chrome/.test(userAgent.toLowerCase())
-
-  if ((isSafariRegex || isMobileSafari) && req.path === '/') {
-    // Serve Safari compatibility page directly
-    res.send(/* Static HTML compatibility page */)
-    return
-  }
-  next()
-})
-```
-
-#### Enhanced Security Configuration
-- **Content Security Policy**: Updated for Safari compatibility
-- **Cross-Origin Policies**: Disabled COEP for Safari compatibility
-- **Static HTML Response**: No external dependencies, preventing SSL/loading issues
-
-#### Browser Support Matrix
-- ✅ **Chrome/Chromium**: Full React application access
-- ✅ **Firefox**: Full React application access
-- ✅ **Microsoft Edge**: Full React application access
-- ⚠️ **Safari (Desktop)**: Professional compatibility warning page
-- ⚠️ **Safari (iOS/Mobile)**: Professional compatibility warning page
-
-#### Benefits
-- **No White Screens**: Safari users see professional messaging instead of errors
-- **Zero Console Errors**: Clean server-side detection prevents asset loading failures
-- **User-Friendly**: Clear browser recommendations with download links
-- **SEO Safe**: Proper HTML structure and meta tags
-- **Performance**: Lightweight static HTML loads instantly
 
 ## Architecture Overview
 
-This is a **dual-view web application** for Mermaid diagram visualization and YANG model exploration, built as a **React SPA with Express backend**, containerized for ARM64/Apple Silicon.
+### Application Structure
+Four-view React SPA with Express backend, optimized for ARM64/Apple Silicon:
+- **Mermaid Viewer**: File management and diagram rendering with export capabilities
+- **Mermaid Editor**: Interactive split-pane editor with CodeMirror and live preview (v2.5.0)
+- **Document View**: Markdown rendering with inline Mermaid diagrams and theme selection
+- **YANG Explorer**: Model parsing, tree visualization, and dependency tracking
 
-### Core Architecture Pattern
-- **Single-page application** with view switching (no page reloads)
-- **State management**: React hooks with localStorage persistence
-- **API communication**: REST endpoints with axios
-- **File handling**: Temporary uploads with in-memory processing
-- **Notification system**: Context-based toast notifications
+### Critical Implementation Patterns
 
-### Key Architectural Components
+#### View State Management
+```typescript
+// App.tsx manages view switching
+const [currentView, setCurrentView] = useState<'mermaid' | 'editor' | 'document' | 'yang'>('mermaid')
+// Header.tsx receives and updates view state
+// Each view is a separate component in frontend/src/views/
+```
 
-**Frontend Structure (`frontend/src/`)**:
-- `App.tsx` - Root component with view state management and theme handling
-- `views/` - Page-level components (`MermaidViewer`, `YangExplorer`)
-- `components/` - Reusable UI components with consistent design system
-- `utils/` - Mermaid initialization and helper functions
-
-**Backend Structure (`backend/src/`)**:
-- `server.js` - Express app with security middleware and static serving
-- `routes/` - API endpoints (`files.js`, `lint.js`, `yang.js`)
-- Production mode serves frontend build from `/frontend/dist`
-
-**View Switching Logic**:
-The app uses a `currentView` state to toggle between two main modes:
-- `mermaid`: File upload → Mermaid rendering → Linting tools
-- `yang`: YANG upload → Tree visualization → Properties panel
-
-## Critical Implementation Details
-
-### ESM/CommonJS Compatibility Issues
-The backend uses ESM modules but some packages (markdownlint, mermaid) require special import handling:
-
+#### ESM/CommonJS Compatibility
+Backend uses ESM but some packages require special handling:
 ```javascript
-// Required pattern for CommonJS packages:
+// Required pattern for CommonJS packages
 import markdownlintPkg from 'markdownlint'
 const { markdownlint } = markdownlintPkg
 ```
 
-### YANG Parser Configuration
-- Uses `yang-js` (replaced `node-yang` which was deprecated)
-- Parser calls: `Yang.parse()` not `yang.parseYang()`
-- Fallback parsing with error handling for malformed YANG files
+#### Mermaid Integration
+```javascript
+// frontend/src/utils/mermaidInit.ts handles initialization
+// Each view that renders Mermaid must call initializeMermaid()
+// Theme preferences stored in localStorage
+```
 
-### NotificationSystem Implementation
-- **Context-based**: `NotificationProvider` wraps the entire app
-- **Hook usage**: `useToast()` for components, `useNotifications()` for advanced control
-- **Auto-dismiss**: 5-second timeout unless marked `persistent: true`
-- **Positioning**: Fixed top-right with stacking support
+#### File Upload Flow
+1. Multer middleware: 10MB limit, 10 files max (`backend/src/routes/files.js`)
+2. Temporary storage in `uploads/` directory
+3. Files processed in-memory, not permanently stored
+4. Supported: `.md`, `.mmd`, `.mermaid`, `.yang`
 
-### Docker Multi-stage Build
-- **ARM64 optimized**: Uses `--platform=linux/arm64` for Apple Silicon
-- **Frontend build stage**: Vite build → static assets
-- **Production stage**: Node.js serving backend + frontend dist
-- **Security**: Non-root user, dumb-init for signal handling
+#### Safari Compatibility
+Server-side detection prevents React loading issues:
+```javascript
+// backend/src/server.js
+// Safari users receive static HTML compatibility page
+// Other browsers load full React application
+```
 
-### File Upload Architecture
-- **Multer middleware**: 10MB limit, 10 files max per upload
-- **Temporary storage**: `uploads/` directory (Docker volume mounted)
-- **Processing**: Files processed in-memory, not permanently stored
-- **Supported types**: `.md`, `.mmd`, `.mermaid`, `.yang`
+## Key Dependencies and Versions
 
-## Recent Updates and Important Notes
+### Frontend Critical Packages
+- `mermaid`: v11.4.1 (breaking changes from v10)
+- `@uiw/react-codemirror`: Editor functionality
+- `vite`: v6 (watch plugin compatibility)
+- `eslint`: v9 (new config format in `eslint.config.js`)
 
-**Package Updates (September 2025)**:
-- Mermaid v10.6.1 → v11.4.1 (breaking changes possible)
-- Vite v4 → v6 (watch for plugin compatibility)
-- ESLint v8 → v9 (new config format in `eslint.config.js`)
-- Multer v1.4.5-lts.1 → v2.0.2 (security fix)
+### Backend Critical Packages
+- `yang-js`: YANG parsing (replaced deprecated `node-yang`)
+- `multer`: v2.0.2 for file uploads
+- `express`: ESM module configuration
 
-**Known Issues to Watch**:
-- ESM/CommonJS compatibility with new packages
-- Vite 6 plugin compatibility
-- Mermaid v11 API changes in diagram rendering
-- `yang-js` vs `node-yang` parsing differences
+## Docker Build Configuration
+- Multi-stage build optimized for ARM64
+- Frontend build stage → static assets
+- Production stage with non-root user
+- Health checks on `/api/health`
+- Volumes: `./uploads:/app/uploads`
 
-**Testing Framework**:
-- **Playwright E2E**: Multi-browser support (Chrome, Firefox, Safari WebKit)
-- **Vitest Unit Tests**: Component testing with React Testing Library
-- **API Integration Tests**: Backend endpoint validation and error handling
-- **Browser Compatibility Tests**: Safari detection and compatibility page rendering
-- **Test Coverage**: 93 unit tests (88 passed), 65 E2E tests with comprehensive scenarios
-- **Known Test Issues**: Some Playwright tests fail in CI due to rapid execution environment differences vs production
-- **Production Validation**: Manual testing confirms Safari compatibility system works correctly
-- Test files in `frontend/tests/` and `frontend/src/__tests__/`
+## API Endpoints
+- `GET /api/health` - Health check
+- `GET /api/files` - List uploaded files
+- `POST /api/files/upload` - Upload files
+- `POST /api/lint/markdown` - Lint Markdown content
+- `POST /api/yang/parse` - Parse YANG models
+- `GET /api/docs` - Swagger documentation
 
-### Production Deployment Status
-- ✅ **Application**: Running on port 3000 with clean build
-- ✅ **All APIs**: Health, Files, Lint, YANG endpoints fully functional
-- ✅ **Swagger Documentation**: Interactive API docs available at `/api/docs`
-- ✅ **Safari Compatibility**: Server-side detection serving professional warning page
-- ✅ **Chrome/Firefox/Edge**: Full React application access with all features
+## Testing Strategy
+- **Playwright E2E**: `frontend/tests/` directory
+- **Component tests**: `frontend/src/__tests__/`
+- **Known issues**: Some tests fail in CI but work in production
+- **Safari testing**: Manual validation required
+
+## Recent Changes (v2.5.0)
+- Added Mermaid Editor feature with CodeMirror integration
+- Fixed missing navigation integration in App.tsx
+- Added required dependencies for editor functionality
+- Updated TypeScript view state types
